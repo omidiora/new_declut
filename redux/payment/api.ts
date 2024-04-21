@@ -1,11 +1,10 @@
-import {SERVER_URL} from './../../Util/Util';
 // apiSlice.js
 import {AnyAction, Dispatch, createSlice} from '@reduxjs/toolkit';
-import axiosInstance from '../../Util/axiosInterceptors';
 import {upLoadFileApiPayload} from '../interface';
 import axios from 'axios';
-import {getUserAsyncStorage} from '../../Util';
-import {AlertNofity, AlertNofityError, notifySucess} from '../../Util/notify';
+import axiosInstance from '../../src/utils/network/axiosInterceptors';
+import {AlertNofityError, AlertNofity} from '../../src/utils/notify';
+import { SERVER_URL } from '../../src/utils/network/url';
 
 const paymentApi = createSlice({
   name: 'paymentApi',
@@ -137,6 +136,7 @@ export const orderPaymentApi = payload => async dispatch => {
         payload.setloading(false);
       })
       .catch(error => {
+        console.log(error,'error from order payment')
         payload.setloading(false);
         AlertNofityError('Order', error?.data?.message);
         dispatch(orderPaymentFailure(error));
@@ -166,16 +166,17 @@ export const confirmPayment = (payload, navigation) => async dispatch => {
             params: response?.data?.data,
           });
         } else {
+          console.log(response, 'error from confirm payment');
           AlertNofityError('Order', response?.message);
-          navigation.navigate('BottomTabNavigation');
+          // navigation.navigate('HomeNavigation');
           dispatch(orderPaymentFailure(response));
         }
       })
       .catch(error => {
-        console.log(error?.data, 'error from confirm payment');
+        console.log(error, 'error from confirm payment');
         AlertNofityError('Order', error?.data?.message);
         dispatch(orderPaymentFailure(error));
-        navigation.navigate('BottomTabNavigation');
+        navigation.navigate('HomeNavigation');
       });
   } catch (error) {
     console.log(error.response, 'error from confirm payment');
@@ -195,7 +196,7 @@ export const confirmPickUp =
         method: 'POST',
       })
         .then(response => {
-          console.log(response?.data, 'response from confirm  pickup');
+          console.log(response, 'response from confirm  pickup');
           if (
             response?.data?.status == 'Success' ||
             response?.data?.code == 200
@@ -217,10 +218,10 @@ export const confirmPickUp =
         })
         .catch(error => {
           setModalVisible(false);
-          setModalVisible2(true);
+          setModalVisible2(false);
           setLoading(false);
 
-          console.log(error, 'error from confirm payment');
+          console.log(error.response, 'error from confirm payment');
           AlertNofityError('Order', error?.data?.message);
           dispatch(orderPaymentFailure(error));
 
@@ -234,9 +235,10 @@ export const confirmPickUp =
   };
 
 export const rejectPickUp =
-  (payload, navigation, setModalVisible, setModalVisible2) =>
+  (payload, navigation, setModalVisible, setModalVisible2 ,setLoading) =>
   async dispatch => {
     try {
+      setLoading(true)
       // {{host}}/payment/payout?complete_order=1&item_id=3&seller_id=1&reference=9c0bd123-09ff-4e15-a17f-2bd7448e74c3
       dispatch(confirmPaymentLoading());
       await axiosInstance({
@@ -244,18 +246,23 @@ export const rejectPickUp =
         method: 'POST',
       })
         .then(response => {
+          console.log(response?.status,'response')
+          AlertNofity('Order', 'Item rejected successfully.');
           console.log(response?.data, 'response from confirm  pickup');
           if (
             response?.data?.status == 'Success' ||
-            response?.data?.code == 200
+            response?.data?.code == 200 || response?.status==200
           ) {
             dispatch(orderPaymentSuccess(response));
             setModalVisible(false);
+            setModalVisible2(false);
+            setLoading(false);
+
             // setModalVisible2(true);
 
-            // navigation.navigate('OrderScreen', {
-            //   params: response?.data?.data,
-            // });
+            navigation.navigate('OrderScreen', {
+              params: response?.data?.data,
+            });
           } else {
             AlertNofityError('Order', 'Kindly try again now!');
             // navigation.navigate('BottomTabNavigation');
@@ -263,8 +270,9 @@ export const rejectPickUp =
           }
         })
         .catch(error => {
+          setLoading(false);
           setModalVisible(false);
-          setModalVisible2(true);
+          setModalVisible2(false);
 
           console.log(error, 'error from confirm payment');
           AlertNofityError('Order', error?.data?.message);

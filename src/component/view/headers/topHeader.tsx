@@ -11,6 +11,7 @@ import {
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {HeaderContainer, HeaderSideComponent, HeaderTitle} from '.';
 import BackIcon from '../../../assets/images/backicon.svg';
+import { RFFontSize, SemiBoldText } from '../../../utils/text';
 
 export const TopHeader: React.FC<{
   title?: string;
@@ -22,6 +23,8 @@ export const TopHeader: React.FC<{
   titleTextStyle?: TextStyle;
   backButtonProp?: React.ReactElement;
   borderBottom?: boolean;
+  rightText:string
+  onPress:()=>void
 }> = ({
   title,
   leftComponent,
@@ -32,16 +35,17 @@ export const TopHeader: React.FC<{
   floating,
   backButtonProp,
   borderBottom,
+  rightText,
+  onPress,
 }) => {
   const {colors} = useTheme();
   const {goBack} = useNavigation();
   const insets = useSafeAreaInsets();
-  
 
   return (
     <HeaderContainer
       style={{
-        paddingTop: insets.top + (Platform.OS === 'ios' ? 12 : 22),
+        paddingTop: insets.top + (Platform.OS === 'ios' ? 12 : 25),
         ...containerStyle,
       }}
       float={floating}
@@ -60,7 +64,15 @@ export const TopHeader: React.FC<{
       )}
       <HeaderSideComponent style={{alignItems: 'flex-end'}}>
         {/* <Text>adfadknk</Text> */}
-        {rightComponent ?? (
+        {rightComponent ? (
+          <>
+            <TouchableOpacity onPress={onPress}>
+            <SemiBoldText fontSize={RFFontSize.sm + 2} color={colors.mainColor}>
+             {rightText}
+            </SemiBoldText>
+            </TouchableOpacity>
+          </>
+        ) : (
           // <AntDesign name={'arrowleft'} color={'transparent'} size={24} />
           <></>
         )}

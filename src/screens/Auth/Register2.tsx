@@ -8,7 +8,7 @@ import {
   ViewContainer,
 } from '../../component/view';
 import {TopHeader} from '../../component/view/headers/topHeader';
-import {SemiBoldText, fontSize, lineHeight} from '../../utils/text';
+import {RFFontSize, SemiBoldText, fontSize, lineHeight} from '../../utils/text';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import Declut from '../../assets/images/declut.svg';
 import styled from '@emotion/native';
@@ -75,13 +75,10 @@ const Register2 = () => {
         <TopHeader
           title={'Create account'}
           // borderBottom
-          rightComponent={
-            <Row onPress={() => navigate('login')}>
-              <SemiBoldText fontSize={fontSize.sm} color={colors.mainColor}>
-                Sign in
-              </SemiBoldText>
-            </Row>
-          }
+          rightComponent={true}
+          rightText='Sign in'
+
+          onPress={() => navigate('login')}
         />
 
         <Spacer height={80} />
@@ -90,14 +87,14 @@ const Register2 = () => {
             <Row
               alignItems="center"
               flexDirection={isFocused || isFocused2 ? 'row' : 'column'}
-              style={{right: isFocused || isFocused2 ? 60 : 0}}>
+              style={{right: isFocused || isFocused2 ? 25 : 0}}>
               <Declut />
 
               <Spacer height={30} />
               <HSpacer width={10} />
               <SemiBoldText
                 textAlign="center"
-                lineHeight={lineHeight.sm}
+                fontSize={lineHeight.sm}
                 color="black">
                 We will never spam you.
               </SemiBoldText>
@@ -126,6 +123,11 @@ const Register2 = () => {
                 borderWidth: 1,
               },
             ]}
+            inputStyle={{
+              lineHeight: RFFontSize.sm + 0.5,
+              fontFamily: font.semiBold,
+              fontSize: RFFontSize.sm,
+            }}
             // leftIcon={<Sms />}
             placeholder="Email"
             labelStyle={[
@@ -157,6 +159,11 @@ const Register2 = () => {
                 borderWidth: 1,
               },
             ]}
+            inputStyle={{
+              lineHeight: RFFontSize.sm + 0.5,
+              fontFamily: font.semiBold,
+              fontSize: RFFontSize.sm,
+            }}
             // leftIcon={<Sms />}
             placeholder="0000 000 0000"
             labelStyle={[

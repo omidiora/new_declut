@@ -1,11 +1,9 @@
-import {SERVER_URL} from './../../Util/Util';
 // apiSlice.js
 import {AnyAction, Dispatch, createSlice} from '@reduxjs/toolkit';
-import axiosInstance from '../../Util/axiosInterceptors';
 import {upLoadFileApiPayload} from '../interface';
 import axios from 'axios';
-import {getUserAsyncStorage} from '../../Util';
-import {AlertNofity, AlertNofityError, notifySucess} from '../../Util/notify';
+import axiosInstance from '../../src/utils/network/axiosInterceptors';
+import { SERVER_URL } from '../../src/utils/network/url';
 
 const locationApi = createSlice({
   name: 'locationApi',

@@ -7,20 +7,14 @@ import Register1 from '../screens/Auth/Register1';
 import Register2 from '../screens/Auth/Register2';
 import CreatePassword from '../screens/Auth/CreatePassword';
 import OtpScreen from '../screens/Auth/OtpScreen';
+import ForgotPasswordScreen from '../screens/Auth/ForgotPasswordScreen';
 
 const AuthNavigation = () => {
   const Stack = createNativeStackNavigator();
 
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
-        name="login"
-        component={LoginScreen}
-      />
-      {/* <Stack.Screen
+      {/*       <Stack.Screen
         options={{
           headerShown: false,
         }}
@@ -34,21 +28,37 @@ const AuthNavigation = () => {
         name="register2"
         component={Register2}
       />
-      */}
-      {/* <Stack.Screen
+
+      <Stack.Screen
         options={{
           headerShown: false,
         }}
         name="createPassword"
         component={CreatePassword}
-      /> */}
+      />
+     */}
+     <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="login"
+        component={LoginScreen}
+      />
+
       <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="forgotPassword"
+        component={ForgotPasswordScreen}
+      />
+       <Stack.Screen
         options={{
           headerShown: false,
         }}
         name="otp"
         component={OtpScreen}
-      />
+      /> 
     </Stack.Navigator>
   );
 };

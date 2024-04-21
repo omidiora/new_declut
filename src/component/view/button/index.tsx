@@ -108,7 +108,7 @@ export const PrimaryButton: React.FC<ButtonProps> = ({
   disabled,
   color,
   backgroundColor,
-  backgroundLoadingColor = '#b491c0',
+  backgroundLoadingColor = '#02A89E',
   children,
 }) => {
   const {colors} = useTheme();
@@ -225,7 +225,7 @@ export const OutlineButton: React.FC<NewButtonProps> = ({
         {title}
       </BoldText>
     }
-    containerStyle={[styles.buttonContainer, {borderColor: 'yellow'}, style]}
+    containerStyle={[styles.buttonContainer, , style]}
     buttonStyle={styles.button2}
     onPress={onPress}
     disabled={disabled}

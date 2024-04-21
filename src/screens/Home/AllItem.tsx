@@ -14,7 +14,11 @@ import {
   Spacer,
   ViewContainer,
 } from '../../component/view';
-import {useFocusEffect, useTheme} from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  useTheme,
+} from '@react-navigation/native';
 import {BoldText, RegularText, SemiBoldText, fontSize} from '../../utils/text';
 import {heightPixel, widthPixel} from '../../utils/theme/pxToDpConvert';
 import styled from '@emotion/native';
@@ -37,6 +41,10 @@ import {useAppSelector} from '../../../redux/hook';
 import FastImage from 'react-native-fast-image';
 import {NAIRA_SYSMBOL, hp, wp} from '../../utils/general';
 import Location from '../../assets/images/location.svg';
+import {FloatingAction} from 'react-native-floating-action';
+import {PostLoader} from 'react-native-preloader-shimmer';
+import ModalSeeAllComponent from './component/ModalSeeAllComponent';
+
 const LinksViewContainer = styled(Container)({
   marginTop: heightPixel(40),
   marginBottom: heightPixel(30),
@@ -71,9 +79,11 @@ const ItemCondition = styled.View({
   width: wp(21),
 });
 
-const AllItem = () => {
+const AllItem = ({onScroll}) => {
   const {colors} = useTheme();
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const [isModalVisible, setModalVisible] = React.useState(false);
 
   const [getInterest] = useGetInterestMutation();
   const {data, loading, error, category, customLocationData} = useAppSelector(
@@ -84,12 +94,18 @@ const AllItem = () => {
     dispatch(fetchApiData());
   }, []);
 
+  const NavigateCategoryProduct = (id, title) => {
+    navigation.navigate('CategoryPage', {
+      categoryId: id,
+      categoryTitle: title,
+    });
+  };
 
-  console.log(error)
+
 
   return (
     <BaseView backgroundColor={colors.bgColor}>
-      <ScrollView contentContainerStyle={{paddingBottom: 30}}>
+      <ScrollView contentContainerStyle={{paddingBottom: 30}}  onScroll={onScroll}>
         <ViewContainer>
           <Spacer height={30} />
           <Row
@@ -99,7 +115,7 @@ const AllItem = () => {
             <BoldText color={colors.darkBlack} fontSize={fontSize.md}>
               Categories
             </BoldText>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
               <SemiBoldText color={colors.mainColor} fontSize={fontSize.md}>
                 See All
               </SemiBoldText>
@@ -109,32 +125,31 @@ const AllItem = () => {
           <LinksViewContainer insets={0}>
             <LinkView
               image={<Electronic width={RFValue(28)} height={RFValue(28)} />}
-              text={'Electronic'}
-              onPress={() => {}}
+              text={'Electronics'}
+              onPress={() => NavigateCategoryProduct(1, 'Electronics')}
               textColor={colors.primary}
             />
             <LinkView
               image={<Funiture width={RFValue(28)} height={RFValue(28)} />}
               text={'Furniture'}
-              onPress={() => {}}
+              onPress={() => NavigateCategoryProduct(2, 'Furniture')}
               textColor={colors.primary}
             />
             <LinkView
               image={<Sport width={RFValue(28)} height={RFValue(28)} />}
               text={'Sports & Outdoor'}
-              onPress={() => {}}
+              onPress={() => NavigateCategoryProduct(3, 'Clothing')}
               textColor={colors.primary}
             />
             <LinkView
               image={<Sport width={RFValue(28)} height={RFValue(28)} />}
               text={'Toys & Games'}
-              onPress={() => {}}
-              textColor={colors.primary}
+              onPress={() => NavigateCategoryProduct(4, 'Toys & Games')}
             />
           </LinksViewContainer>
-          <Spacer height={5} />
+          <Spacer height={15} />
           <LineComponent />
-          <Spacer height={50} />
+          <Spacer height={24} />
           <Row
             disabled={true}
             flexDirection="row"
@@ -142,7 +157,12 @@ const AllItem = () => {
             <BoldText color={colors.darkBlack} fontSize={fontSize.md}>
               Listing
             </BoldText>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Setting', {
+                  screen: 'GeneralSetting',
+                })
+              }>
               <Setting />
             </TouchableOpacity>
           </Row>
@@ -151,6 +171,7 @@ const AllItem = () => {
             contentContainerStyle={{
               flex: 1,
               alignSelf: 'center',
+              paddingBottom: 30,
               // paddingVertical: 20,
               // paddingHorizontal: 15,
             }}
@@ -166,7 +187,9 @@ const AllItem = () => {
             showsVerticalScrollIndicator={false}
             renderItem={({item}) => (
               <>
-                <TouchableOpacity style={{marginBottom: 50}}>
+                <TouchableOpacity
+                  style={{marginBottom: 50}}
+                  onPress={() => navigation.navigate('PreviewItem', {item})}>
                   <FastImage
                     style={{
                       width: SIZES.width / 2.3,
@@ -178,7 +201,7 @@ const AllItem = () => {
                       // Make the image round
                     }}
                     source={{
-                      uri: 'https://unsplash.it/400/400?image=1',
+                      uri: item.item_media?.[0]?.filepath,
 
                       priority: FastImage.priority.high,
                     }}
@@ -212,9 +235,9 @@ const AllItem = () => {
                       <View>
                         <LocationIcon />
                       </View>
-                      <BoldText fontSize={14} color={colors.mediumGrey}>
+                      <SemiBoldText fontSize={14} color={colors.mediumGrey}>
                         {item.area} {item.state}
-                      </BoldText>
+                      </SemiBoldText>
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -222,7 +245,7 @@ const AllItem = () => {
             )}
             ListEmptyComponent={() => (
               <>
-                {/* {loading ? (
+                {loading ? (
                   <View style={styles.empty}>
                     <PostLoader
                       barStyle={'dark-content'} //---> StatusBar Icon color
@@ -232,12 +255,23 @@ const AllItem = () => {
                     />
                   </View>
                 ) : (
-                  <Text style={styles.noItem}>
-                    No item in your location yet !{' '}
-                  </Text>
-                )} */}
+                  <>
+                    <Spacer />
+                    <SemiBoldText
+                      fontSize={14}
+                      color={colors.secondaryBlack}
+                      style={styles.noItem}>
+                      No item in your location yet !
+                    </SemiBoldText>
+                  </>
+                )}
               </>
             )}
+          />
+
+          <ModalSeeAllComponent
+            visible={isModalVisible}
+            setModalVisible={setModalVisible}
           />
         </ViewContainer>
       </ScrollView>
@@ -247,4 +281,10 @@ const AllItem = () => {
 
 export default AllItem;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  empty: {
+    alignSelf: 'center',
+    marginTop: hp(2),
+    width: wp(100),
+  },
+});

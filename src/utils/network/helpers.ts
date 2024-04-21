@@ -3,11 +3,8 @@ import { Auth } from '../../../redux/auth';
 
 export const getUserAsyncStorage = async () => {
   const {getItem} = useAsyncStorage('@declut_user');
-  
   const result = await getItem();
-  console.log(result,'adakdn')
-  const user = result ? result: null;
-  
-
-  return user;
+  console.log(result,'adaf1111a')
+  // const user = result ? (JSON.parse(result) as Auth) : null;
+  return result;
 };

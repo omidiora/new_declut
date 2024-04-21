@@ -3,26 +3,26 @@ import {authApi} from './auth/api';
 // import { product } from './product/api'
 import productApi from './product/api';
 // import authReducer from './auth'
-// import profileReducer  from './auth/profile'
-// import paymentReducer  from './payment/api'
-// import locationReducer  from './location/api'
+ import profileReducer  from './auth/profile'
+import paymentReducer from './payment/api';
+import searchReducer from './search/api';
+ import locationReducer  from './location/api'
 
 export const store = configureStore({
   reducer: {
     [authApi.reducerPath]: authApi.reducer,
-
     // auth: authReducer,
     product: productApi,
-    // profile:profileReducer,
-    // payment:paymentReducer,
-    // location:locationReducer
+     profile:profileReducer,
+    payment: paymentReducer,
+    search: searchReducer,
+   location:locationReducer
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       immutableCheck: false,
       serializableCheck: false,
-    })
-      .concat(authApi.middleware)
+    }).concat(authApi.middleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

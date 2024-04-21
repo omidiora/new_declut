@@ -11,28 +11,96 @@ import OTPTextView from 'react-native-otp-textinput';
 import {hp} from '../../utils/general';
 import {OutlineButton, PrimaryButton} from '../../component/view/button';
 import SuccessRegisterModal from '../../component/view/SuccessRegisterModal ';
+import {
+  useOtpAuthMutation,
+  useResendOtpAuthMutation,
+} from '../../../redux/auth/api';
+import {AlertNofity, AlertNofityError} from '../../utils/notify';
 
 const Dotteds = styled(Dotted)({
   marginTop: SIZES.height / 15,
   alignSelf: 'center',
 });
 
-const OtpScreen = () => {
+const OtpScreen = props => {
   const {colors} = useTheme();
   const [isVisble, setisVisble] = React.useState(false);
   const {navigate} = useNavigation();
+  const [remainingTime, setRemainingTime] = React.useState(60);
+  const [OtpAuth, {isLoading, data}] = useOtpAuthMutation();
+  const [ResendOtpAuth, {isLoading: resendLoading}] =
+    useResendOtpAuthMutation();
+  const navigation = useNavigation();
+  const [otpText, setotpText] = React.useState('');
+
+  React.useEffect(() => {
+    let timer;
+
+    const updateRemainingTime = () => {
+      if (remainingTime === 0) {
+        clearTimeout(timer);
+      } else {
+        setRemainingTime(prevTime => {
+          if (prevTime === 0) return 0;
+          return prevTime - 1;
+        });
+        timer = setTimeout(updateRemainingTime, 1000);
+      }
+    };
+
+    // Initial setup
+    updateRemainingTime();
+
+    // Cleanup function to clear the timer when component unmounts or re-renders
+    return () => clearTimeout(timer);
+  }, []);
+
+  const VerifyOtp = () => {
+    OtpAuth(otpText)
+      .unwrap()
+      .then(response => {
+        console.log(response, 'response from verify otp');
+        if (response.code == 200 || response.code == 201) {
+          AlertNofity('Success', 'Account Verified Successfully');
+          navigation.navigate('Auth', {
+            screen: 'Login',
+          });
+        } else {
+          AlertNofityError(response.message);
+        }
+      })
+      .catch(err => {
+        console.log(err, 'a');
+        AlertNofityError(
+          'Invalid',
+          'Invalid Otp Code. Kindly Check your email',
+        );
+      });
+  };
+
+  const ResendOtpCode = () => {
+    setRemainingTime(60);
+    ResendOtpAuth(userId)
+      .unwrap()
+      .then(response => {
+        console.log(response, 'resonse');
+        AlertNofity('Otp', 'Otp Resent Successfully');
+        setRemainingTime(60);
+      })
+      .catch(err => {
+        console.log(err, 'eee');
+        AlertNofityError('Otp', 'Something weng wrong. Kindly Retry');
+      });
+  };
+
   return (
     <BaseView backgroundColor={colors.bgColor}>
       <TopHeader
         title={'OTP Verification'}
         // borderBottom
-        rightComponent={
-          <Row onPress={() => navigate('login')}>
-            <SemiBoldText fontSize={fontSize.sm} color={colors.mainColor}>
-              Sign in
-            </SemiBoldText>
-          </Row>
-        }
+        rightComponent={true}
+        rightText='Sigin In'
+        onPress={()=>navigate("login")}
       />
       <ViewContainer>
         <Spacer height={30} />
@@ -54,7 +122,7 @@ const OtpScreen = () => {
         </BoldText>
         <Spacer height={30} />
         <OTPTextView
-          handleTextChange={value => console.log(value)}
+          handleTextChange={value => setotpText(value)}
           containerStyle={styles.textInputContainer}
           textInputStyle={styles.roundedTextInput}
           inputCount={6}
@@ -64,20 +132,33 @@ const OtpScreen = () => {
           <SemiBoldText color={colors.mediumGrey} textAlign="center">
             The code expires in
           </SemiBoldText>
-          <SemiBoldText color={colors.mainColor}> 30 seconds.</SemiBoldText>
+          <SemiBoldText color={colors.mainColor}>
+            {' '}
+            {remainingTime} seconds.
+          </SemiBoldText>
         </Row>
 
         <Spacer height={80} />
-        <OutlineButton
-          title="Resend Code"
-          color={colors.lightGrey}
-          style={{borderWidth: 0, backgroundColor: colors.lightGrey}}
-        />
+        {remainingTime == 0 && (
+          <>
+            <OutlineButton
+              title="Resend Code"
+              color={remainingTime == 0 ? colors.mainColor : colors.lightGrey}
+              style={{borderWidth: 0, backgroundColor: 'transparent'}}
+              onPress={() => ResendOtpCode()}
+              disabled={remainingTime == 0 ? false : true}
+            />
+          </>
+        )}
         <Spacer height={150} />
         <PrimaryButton
+          onPress={() => VerifyOtp()}
           text="Verify"
-          backgroundColor={colors.lightGrey}
-          color={colors.disabled}
+          backgroundColor={
+            otpText?.length == 6 ? colors.mainColor : colors.lightGrey
+          }
+          color={otpText?.length == 6 ? 'white' : colors.disabled}
+          disabled={otpText?.length == 6 ? false : true}
         />
 
         <SuccessRegisterModal isVisible={isVisble} />

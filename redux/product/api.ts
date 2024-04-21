@@ -38,6 +38,8 @@ const productApi = createSlice({
     orderHistoryPendingArray: [],
     deleteSucess: {},
     searchHistory: [],
+    rating: 0,
+    ratingLoading: false,
   },
   reducers: {
     fetchDataStart(state) {
@@ -263,6 +265,21 @@ const productApi = createSlice({
       state.editProductListItem = action.payload;
     },
 
+    ratingLoading(state) {
+      state.ratingLoading = true;
+    },
+
+    ratingSuccess(state, action) {
+      state.rating = action.payload;
+      state.ratingLoading = false;
+      state.error = null;
+    },
+    ratingFailure(state, action) {
+      state.rating = 0;
+      state.ratingLoading = false;
+      state.error = action.payload;
+    },
+
     //  editProduct
   },
 });
@@ -318,6 +335,9 @@ export const {
   orderHistoryPendingFailure,
   updateUploadProgress,
   editProductItemAction,
+  ratingLoading,
+  ratingSuccess,
+  ratingFailure,
 } = productApi.actions;
 
 export const fetchApiData = () => async dispatch => {
@@ -364,7 +384,7 @@ export const fetchApiDataByLocation =
           dispatch(fetchDataFailure(error));
         });
     } catch (error) {
-      notify('Network Failed', 'No network connection detected!!');
+      AlertNofityError('Network Failed', 'No network connection detected!!');
       dispatch(fetchDataFailure(error));
     }
   };
@@ -457,7 +477,8 @@ export const upLoadFileApi =
     Profile: any,
     updateAvatar: any,
   ) =>
-  async (dispatch: Dispatch<AnyAction>) => {
+  async dispatch => {
+    console.log('starting', 'staring');
     try {
       dispatch(upLoadFileStart());
 
@@ -475,6 +496,8 @@ export const upLoadFileApi =
               (progressEvent.loaded * 100) / progressEvent.total,
             );
 
+            console.log(progress, 'progresss');
+
             // console.log(progress,'progress')
             // Dispatch an action to handle the progress
             dispatch(updateUploadProgress(progress));
@@ -490,7 +513,7 @@ export const upLoadFileApi =
       if (response.data.data && !Profile) {
         navigation.navigate('Item4');
       } else {
-        // alert('yes!!!');
+        //  alert('yes!!!');
         updateAvatar();
       }
     } catch (error) {
@@ -520,12 +543,21 @@ export const upCreateProductApi =
           },
         },
       );
-      AlertNofity('Upload', 'Product Upload Success');
-      // Adjust endpoint as needed
-      dispatch(upLoadFileSuccess(response.data));
+      console.log(response.data, 'resonse from upload');
+      if (response.data?.code == 404) {
+        AlertNofityError('Account', response.data?.message);
+        navigation.navigate('Payment', {
+          screen: 'PaymentForm',
+        });
+        //
+      } else {
+        AlertNofity('Upload', 'Product Upload Success');
+        dispatch(upLoadFileSuccess(response.data));
+        navigation.navigate('BottomTabNavigation');
+      }
       setVisible(false);
       setVisibleSuccessModal(true);
-      navigation.navigate('BottomTabNavigation');
+      // Adjust endpoint as needed
     } catch (error) {
       console.log(error, 'error');
       AlertNofityError('Upload Failed', error.data?.message);
@@ -639,6 +671,25 @@ export const SaveSearchKeyWord = () => async dispatch => {
       });
   } catch (error) {
     dispatch(searchHistoryFailure(error));
+  }
+};
+
+export const ratingApi = (payload, navigation) => async dispatch => {
+  try {
+    dispatch(ratingLoading());
+    await axiosInstance
+      .post(`${SERVER_URL}/rate-seller/${payload.seller_id}`, payload)
+      .then(response => {
+        dispatch(ratingSuccess(response.data));
+        AlertNofity('Setting', 'Setting Updated Successfully');
+        navigation.goBack();
+      })
+      .catch(error => {
+        console.log(error.data, 'error from settting');
+        dispatch(ratingFailure());
+      });
+  } catch (error) {
+    dispatch(ratingFailure(error.message));
   }
 };
 

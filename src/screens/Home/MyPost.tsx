@@ -30,6 +30,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import TrashIcon from '../../assets/images/trash.svg';
 import EditIcon from '../../assets/images/edit.svg';
 import Shimmer from 'react-native-shimmer-kit';
+import {FloatingAction} from 'react-native-floating-action';
 const LocationIcon = styled(Location)({
   marginTop: 1,
   // paddingHorizontal:10,
@@ -73,15 +74,18 @@ const MyPost = () => {
       },
     });
   };
+
+  console.log('====================================');
+  console.log(myPost?.data ,'myPost?.data ');
+  console.log('====================================');
   return (
     <BaseView backgroundColor={colors.bgColor}>
       <Spacer />
-      <ViewContainer>
+      <ViewContainer backgroundColor={colors.bgColor}>
         <View>
           <FlatList
             // contentContainerStyle={{paddingTop:10}}
             data={
-              // myPost?.data
               typeof myPost?.data === 'object'
                 ? Object.values(myPost?.data ?? {})
                 : myPost?.data
@@ -99,7 +103,7 @@ const MyPost = () => {
                       borderRadius: 12,
                     }}
                     source={{
-                      uri: 'https://unsplash.it/400/400?image=1',
+                      uri: item.item_image,
                       priority: FastImage.priority.high,
                     }}
                     resizeMode={FastImage.resizeMode.cover}
@@ -216,6 +220,20 @@ const MyPost = () => {
           </BoldText>
         </ActionContainer>
       </RBSheet>
+      <Spacer height={350} />
+      <FloatingAction
+        animated={false}
+        showBackground={false}
+        color={colors.mainColor}
+        distanceToEdge={{
+          vertical: 130,
+          horizontal: 40,
+        }}
+        actions={[]}
+        onPressMain={name => {
+          navigation.navigate('ProductNavigation');
+        }}
+      />
     </BaseView>
   );
 };

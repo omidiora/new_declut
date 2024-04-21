@@ -1,5 +1,5 @@
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   BaseView,
   HSpacer,
@@ -23,6 +23,7 @@ import {PasswordInputComponent} from '../../component/view/passwordInput';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useRegisterMutation} from '../../../redux/auth/api';
 import SuccessRegisterModal from '../../component/view/SuccessRegisterModal ';
+import {AlertNofityError} from '../../utils/notify';
 
 const DeclutContainer = styled.View({
   alignItems: 'center',
@@ -34,11 +35,20 @@ const CreatePassword = () => {
   const [isFocused2, setIsFocused2] = React.useState(false);
   const {getItem, setItem} = useAsyncStorage('@declut_user_name');
   const {navigate} = useNavigation();
-  const {register} = useRegisterMutation();
+  const [register, {isLoading}] = useRegisterMutation();
   const [isVisble, setisVisble] = React.useState(false);
   const route = useRoute();
 
-  console.log('route');
+  const [detail, setDetail] = useState('');
+
+  const getUserDetails = async () => {
+    const item = await getItem();
+    setDetail(item);
+  };
+
+  useEffect(() => {
+    getUserDetails();
+  }, []);
 
   const {
     values,
@@ -56,27 +66,30 @@ const CreatePassword = () => {
 
     validationSchema: PasswordSchema,
 
-    onSubmit: () => {},
+    onSubmit: () => {
+      RegisterFunction();
+    },
   });
 
-  const RegisterFunction = values => {
+  const RegisterFunction = () => {
     register({
-      name: name,
-      phone_number: `+234${params.phone}`,
+      name: detail,
+      phone_number: `+234${route.params.phone}`,
       email: route.params.email,
-      password: values.password,
-      avatar: '',
+      password: values?.password,
+      avatar: ' ',
     })
       .unwrap()
       .then(response => {
         console.log(response, 'response create the totla user');
         if (response?.code == 409) {
           AlertNofityError('Error', 'Email and Phone  is already Used');
-        } else {
+        } else if (response.code == 201 || response.code == 200) {
           // LocalStorage.set('userId', response?.data?.id);
-          // navigate('Otp', {
-          //   phone: route.params.phone_number,
-          // });
+          navigate('otp', {
+            phone: `+234${route.params.phone}`,
+            user: response.data,
+          });
         }
       })
       .catch(err => {
@@ -84,6 +97,10 @@ const CreatePassword = () => {
         AlertNofityError('Error', 'Something Went Wrong!!');
       });
   };
+
+  console.log('====================================');
+  console.log(values?.password, '1');
+  console.log('====================================');
   return (
     <BaseView backgroundColor={colors.bgColor}>
       <>
@@ -91,16 +108,10 @@ const CreatePassword = () => {
           <TopHeader
             title={'Security'}
             // borderBottom
-            rightComponent={
-              <Row
-                onPress={() =>
-                  navigate('PaymentsNavigation', {screen: 'CreatePaymentLink'})
-                }>
-                <SemiBoldText fontSize={fontSize.sm} color={colors.mainColor}>
-                  Sign in
-                </SemiBoldText>
-              </Row>
-            }
+            
+            rightComponent={true}
+            rightText='Sign In'
+            onPress={() => navigate('login')}
           />
         </View>
         <Spacer height={80} />
@@ -119,9 +130,9 @@ const CreatePassword = () => {
                 {isFocused || (isFocused2 && <HSpacer width={10} />)}
                 <SemiBoldText
                   textAlign={isFocused || isFocused2 ? 'left' : 'center'}
-                  lineHeight={lineHeight.sm}
+                  fontSize={lineHeight.sm}
                   color="black">
-                  Lets get your account secured. This is the {'\n'} last step,
+                  Lets get your account secured. This is the last step,
                   we promise.
                 </SemiBoldText>
               </Row>
@@ -146,7 +157,7 @@ const CreatePassword = () => {
                 },
               ]}
               // leftIcon={<Sms />}
-              placeholder="Email"
+              placeholder="Password"
               labelStyle={[
                 styles.labelStyle,
                 isFocused && {color: colors.mainColor},
@@ -210,13 +221,11 @@ const CreatePassword = () => {
               disabled={
                 (values.password || values.confirmPassword) == '' && true
               }
+              loading={isLoading}
             />
-           
           </ViewContainer>
-          
         </KeyboardAwareScrollView>
       </>
-      
     </BaseView>
   );
 };

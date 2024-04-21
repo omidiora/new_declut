@@ -27,7 +27,7 @@ export const authApi = createApi({
     //
     OtpAuth: builder.mutation<UserResponse, UserRequest>({
       query: payload => ({
-        url: `/verify-code/${'userId'}?verif_code=${payload}`,
+        url: `/verify-code/${userId}?verif_code=${payload}`,
         method: 'post',
       }),
     }),
@@ -39,7 +39,7 @@ export const authApi = createApi({
       }),
     }),
 
-    forgotPasswordApi: builder.mutation<UserResponse, RendOtpRequest>({
+    forgotPasswordApi: builder.mutation<any, any>({
       query: payload => ({
         url: `/forgot-password`,
         method: 'post',

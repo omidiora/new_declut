@@ -8,9 +8,10 @@ import {
   ViewContainer,
 } from '../../component/view';
 import {TopHeader} from '../../component/view/headers/topHeader';
-import {SemiBoldText, fontSize, lineHeight} from '../../utils/text';
+import {RFFontSize, SemiBoldText, fontSize, lineHeight} from '../../utils/text';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import Declut from '../../assets/images/declut.svg';
+import SmallDeclut from '../../assets/images/smallBg.svg';
 import styled from '@emotion/native';
 import {Input, fonts} from '@rneui/base';
 import {wp} from '../../utils/general';
@@ -67,14 +68,10 @@ const Register1 = () => {
       <>
         <TopHeader
           title={'Create account'}
-          // borderBottom
-          rightComponent={
-            <Row onPress={() => navigate('login')}>
-              <SemiBoldText fontSize={fontSize.sm} color={colors.mainColor}>
-                Sign in
-              </SemiBoldText>
-            </Row>
-          }
+          
+          rightComponent={true}
+          rightText="Sign in"
+          onPress={() => navigate('login')}
         />
 
         <Spacer height={80} />
@@ -84,14 +81,15 @@ const Register1 = () => {
               <Row
                 flexDirection={isFocused ? 'row' : 'column'}
                 alignItems="center">
-                <Declut />
+                {isFocused ? <SmallDeclut /> : <Declut />}
+
                 <Spacer height={30} />
                 <HSpacer />
                 <SemiBoldText
                   textAlign={isFocused ? 'left' : 'center'}
-                  lineHeight={lineHeight.sm}
+                  fontSize={lineHeight.sm}
                   color="black">
-                  Lets get to know you and get your account {'\n'}created.
+                  Lets get to know you and get your account created.
                 </SemiBoldText>
               </Row>
             </DeclutContainer>
@@ -112,6 +110,11 @@ const Register1 = () => {
                   borderBottomWidth: 1,
                 },
               ]}
+              inputStyle={{
+                lineHeight: RFFontSize.sm + 0.5,
+                fontFamily: font.semiBold,
+                fontSize: RFFontSize.sm,
+              }}
               // leftIcon={<Sms />}
               placeholder="John Doe"
               labelStyle={[

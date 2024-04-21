@@ -15,6 +15,7 @@ import {
 } from '../../component/view';
 import {TopHeader} from '../../component/view/headers/topHeader';
 import {
+  RFFontSize,
   RegularText,
   SemiBoldText,
   fontSize,
@@ -22,6 +23,7 @@ import {
 } from '../../utils/text';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import Declut from '../../assets/images/declut.svg';
+import SmallDeclut from '../../assets/images/smallBg.svg';
 import styled from '@emotion/native';
 import {Input, fonts} from '@rneui/base';
 import {wp} from '../../utils/general';
@@ -37,7 +39,8 @@ import {useLoginMutation} from '../../../redux/auth/api';
 import {useDispatch} from 'react-redux';
 import {AlertNofityError} from '../../utils/notify';
 import {setCredential} from '../../../redux/auth';
-
+import {SearchBar} from '@rneui/themed';
+import {errorStyle} from './styling';
 const DeclutContainer = styled.View({
   alignItems: 'center',
 });
@@ -51,7 +54,7 @@ const ForgotContainer = styled.TouchableOpacity({
 const ForgotText = styled.Text({
   color: '#02A89E',
   fontSize: fontSize.md,
-  fontFamily: font.regular,
+  fontFamily: font.semiBold,
 });
 const LoginScreen = () => {
   const {colors} = useTheme();
@@ -61,6 +64,7 @@ const LoginScreen = () => {
   const [login, {error, isLoading, data}] = useLoginMutation();
   const dispatch = useDispatch();
   const {setItem} = useAsyncStorage('@declut_user');
+  const {setItem: setUserDetails} = useAsyncStorage('@declut');
   const {
     values,
     errors,
@@ -71,9 +75,8 @@ const LoginScreen = () => {
     touched,
   } = useFormik({
     initialValues: {
-      email: '',
       phone: '',
-      password:''
+      password: '',
     },
 
     validationSchema: LoginSchema,
@@ -97,15 +100,14 @@ const LoginScreen = () => {
         console.log(response, 'response');
         if (response.code == 200) {
           setItem(response?.data?.authorisation?.token);
+          setUserDetails(JSON.stringify(response?.data?.user));
           dispatch(
             setCredential({
               user: response?.data?.user,
               access_token: response?.data?.authorisation?.token,
             }),
           );
-          // navigate('RoutingRoute', {
-          //   screen: 'BottomTabNavigation',
-          // });
+          navigate('BottomTabNavigation');
         } else {
           AlertNofityError('Login Failed', 'Incorrect Login Detail');
         }
@@ -119,7 +121,7 @@ const LoginScreen = () => {
   console.log(errors, 'error');
 
   console.log('====================================');
-  console.log(values);
+  console.log(isFocused2, 'isFocused2 ');
   console.log('====================================');
 
   return (
@@ -128,13 +130,9 @@ const LoginScreen = () => {
         <TopHeader
           title={'Sign In'}
           // borderBottom
-          rightComponent={
-            <Row onPress={() => navigate('register1')}>
-              <SemiBoldText fontSize={fontSize.sm} color={colors.mainColor}>
-                Sign up
-              </SemiBoldText>
-            </Row>
-          }
+          rightComponent={true}
+          rightText="Sign  Up"
+          onPress={() => navigate('register1')}
         />
 
         <Spacer height={80} />
@@ -143,19 +141,27 @@ const LoginScreen = () => {
             <Row
               alignItems="center"
               flexDirection={isFocused || isFocused2 ? 'row' : 'column'}
-              style={{right: isFocused || isFocused2 ? 89 : 0}}>
-              <Declut />
+              style={{right: isFocused || isFocused2 ? 80 : 0}}>
+              {/* */}
+              {isFocused || isFocused2 ? <SmallDeclut /> : <Declut />}
 
-              <Spacer height={30} />
+              <Spacer height={40} />
               <HSpacer width={10} />
               <View>
                 <SemiBoldText
                   textAlign="center"
-                  lineHeight={lineHeight.sm}
-                  color="black">
+                  fontSize={fontSize.sm + 4}
+                  color="#101828">
                   Welcome Back!
                 </SemiBoldText>
-                <RegularText color="black">Lets get you in</RegularText>
+                <View style={{right: isFocused || isFocused2 ? 10 : 0}}>
+                  <RegularText
+                    fontSize={fontSize.sm + 2}
+                    color="black"
+                    textAlign="center">
+                    Lets get you in
+                  </RegularText>
+                </View>
               </View>
             </Row>
           </DeclutContainer>
@@ -163,6 +169,7 @@ const LoginScreen = () => {
           <Spacer height={50} />
 
           <Input
+            keyboardType="numeric"
             label="Phone *"
             inputContainerStyle={[
               styles.inputContainerStyle,
@@ -171,35 +178,54 @@ const LoginScreen = () => {
                 borderWidth: 1,
                 borderBottomWidth: 1,
               },
-              values.email && {
+              values.phone && {
                 backgroundColor: 'white',
-                borderColor: colors.lightGrey,
-                borderWidth: 1,
+                // borderColor: colors.lightGrey,
+                // borderWidth: 1,
               },
+              errors.phone && errorStyle,
             ]}
+            inputStyle={{
+              lineHeight: RFFontSize.sm + 0.5,
+              fontFamily: font.semiBold,
+              fontSize: RFFontSize.sm,
+            }}
             // leftIcon={<Sms />}
             placeholder="Phone"
             labelStyle={[
               styles.labelStyle,
+              {
+                paddingTop: 3,
+              },
               isFocused && {color: colors.mainColor},
-              values.email && {
+              values.phone && {
                 color: 'black',
               },
             ]}
             onChangeText={handleChange('phone')}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            errorMessage={touched.email && errors.email}
+            errorMessage={touched.phone && errors.phone}
             //   errorMessage='adlmladnn'
           />
 
+          {errors.phone && <Spacer />}
           <View style={{marginLeft: SIZES.width / 50}}>
             <PasswordInputComponent
               label="Password *"
-              color={'black'}
+              style={{
+                fontSize: fontSize.sm,
+                fontFamily: font.semiBold,
+                lineHeight: RFFontSize.sm + 0.5,
+                opacity: 0.8,
+              }}
               containerStyle={[
                 styles.inputContainerStyle,
+                {
+                  borderBottomWidth: 0.5,
+                },
 
+                errors.phone && errorStyle,
                 isFocused2 && {
                   borderColor: colors.mainColor,
                   borderWidth: 1,
@@ -208,12 +234,12 @@ const LoginScreen = () => {
                 },
                 values.password && {
                   backgroundColor: 'white',
-                  borderColor: colors.lightGrey,
-                  borderWidth: 1,
+                  // borderColor: colors.lightGrey,
+                  // borderWidth: 1,
                 },
               ]}
               // leftIcon={<Sms />}
-              placeholder="0000 000 0000"
+              placeholder="password"
               labelStyle={[
                 styles.labelStyle,
                 isFocused2 && {color: colors.mainColor},
@@ -227,8 +253,8 @@ const LoginScreen = () => {
 
               //   bottomText='adlmladnn'
             />
-            <ForgotContainer>
-              <ForgotText>Forgot Password ?</ForgotText>
+            <ForgotContainer onPress={() => navigate('forgotPassword')}>
+              <ForgotText>Forgot Password?</ForgotText>
             </ForgotContainer>
           </View>
 
@@ -241,7 +267,7 @@ const LoginScreen = () => {
                 borderWidth: 1,
                 borderBottomWidth: 1,
               },
-              values.phone_number && {
+              values.phone && {
                 backgroundColor: 'white',
                 borderColor: colors.lightGrey,
                 borderWidth: 1,
@@ -259,24 +285,24 @@ const LoginScreen = () => {
             errorMessage={errors.phone}
             //   errorMessage='adlmladnn'
           /> */}
-          <Spacer height={150} />
+          <Spacer height={130} />
 
           <PrimaryButton
             isLoading={isLoading}
             text="Sign In"
             color={
-              (values.email || values.phone_number) == ''
+              (values.password || values.phone) == ''
                 ? colors.disabled
                 : colors.white
             }
             onPress={handleSubmit}
             backgroundColor={
-              (values.email || values.phone_number) == ''
+              (values.password || values.phone) == ''
                 ? colors.grey
                 : colors.mainColor
             }
             disabled={
-              (values.email || values.phone_number || !isLoading) == '' && true
+              (!values.password || !values.phone || isLoading == true) && true
             }
           />
         </ViewContainer>
@@ -291,7 +317,7 @@ const styles = StyleSheet.create({
   inputContainerStyle: {
     // alignItems: 'flex-start',
     // borderBottomWidth: 0,
-    borderBottomColor: 'red',
+    borderBottomColor: 'lightgrey',
     borderWidth: 0,
     padding: 6,
     borderRadius: 10,
@@ -300,6 +326,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     borderBottomWidth: 0,
     backgroundColor: '#E4E7EC',
+    fontFamily: font.medium,
   },
   labelStyle: {
     fontFamily: font.medium,

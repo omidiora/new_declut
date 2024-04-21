@@ -23,7 +23,7 @@ const OnboardingScreen = () => {
         <PrimaryButton
           backgroundColor={colors.mainColor}
           text="Get Started"
-          onPress={() => navigate('AccountType')}
+          onPress={() => navigate('Auth')}
         />
         <Spacer height={hp(1)} />
       </BottomContainer>

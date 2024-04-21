@@ -13,7 +13,7 @@ export default StyleSheet.create({
   button2: {
     backgroundColor: '#F9FAFB',
     borderColor: "#E85E5E",
-    height: 50,
+    height: 57,
     width: '100%'
   }
 });

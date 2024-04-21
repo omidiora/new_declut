@@ -39,6 +39,8 @@ declare module '@emotion/react' {
       bgColor:string;
       secondaryBlack:string;
       mediumGrey:string;
+      orange:string;
+      darkBlack:string
     };
   }
 }

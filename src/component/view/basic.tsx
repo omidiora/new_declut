@@ -58,8 +58,8 @@ export interface InputWrapperProps extends TextInputProps {
   bottomTextOnError?: boolean;
   solid?: boolean;
   onPress?: () => void;
-  setIsFocused?:() => void;
-  setIsBlur?:()=> void;
+  setIsFocused?: () => void;
+  setIsBlur?: () => void;
 }
 export const InputWrapperBox: React.FC<InputWrapperProps> = ({
   leftIcon,
@@ -103,7 +103,7 @@ export const InputWrapperBox: React.FC<InputWrapperProps> = ({
           color={color}
           editable={editable}
           placeholder={placeholder}
-          placeholderTextColor="#C4C4C4"
+          placeholderTextColor="#667085"
           onFocus={() => {
             setActive(true);
             setIsFocused();
@@ -119,7 +119,7 @@ export const InputWrapperBox: React.FC<InputWrapperProps> = ({
       {(bottomText && !bottomTextOnError) ||
       (bottomText && bottomTextOnError && inputError) ? (
         <BottomText
-          color={inputError ? colors.red : colors.text}
+          color={inputError ? 'red' : colors.text}
           {...bottomTextProps}>
           {bottomText}
         </BottomText>
@@ -139,6 +139,7 @@ export const InputBox = styled.TextInput<{
   flexGrow: 1,
   flex: 1,
   paddingHorizontal: 7,
+  
   // backgroundColor: "indigo",
 }));
 
