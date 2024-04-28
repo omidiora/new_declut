@@ -13,14 +13,15 @@ import {useNavigation, useTheme} from '@react-navigation/native';
 import Declut from '../../assets/images/declut.svg';
 import SmallDeclut from '../../assets/images/smallBg.svg';
 import styled from '@emotion/native';
-import {Input, fonts} from '@rneui/base';
-import {wp} from '../../utils/general';
+import {Input, fonts, patchWebProps} from '@rneui/base';
+import {hp, wp} from '../../utils/general';
 import {font} from '../../utils/theme/fonts';
 import {useFormik} from 'formik';
 import {PrimaryButton} from '../../component/view/button';
 import {useAsyncStorage} from '@react-native-async-storage/async-storage';
 import {NameValidtion} from './validation';
 import Eclipese from '../../assets/images/ellipses.svg';
+import { errorStyle, labelStyle } from './styling';
 
 const DeclutContainer = styled.View({
   alignItems: 'center',
@@ -64,7 +65,7 @@ const Register1 = () => {
   console.log(errors);
   console.log('====================================');
   return (
-    <BaseView backgroundColor="#F9FAFB">
+    <BaseView backgroundColor="#F9FAFB" focusBarStyle={"dark-content"}>
       <>
         <TopHeader
           title={'Create account'}
@@ -79,6 +80,7 @@ const Register1 = () => {
           <ViewContainer paddingHorizontal={21}>
             <DeclutContainer>
               <Row
+              disabled
                 flexDirection={isFocused ? 'row' : 'column'}
                 alignItems="center">
                 {isFocused ? <SmallDeclut /> : <Declut />}
@@ -88,6 +90,7 @@ const Register1 = () => {
                 <SemiBoldText
                   textAlign={isFocused ? 'left' : 'center'}
                   fontSize={lineHeight.sm}
+                  lineHeight={24}
                   color="black">
                   Lets get to know you and get your account created.
                 </SemiBoldText>
@@ -109,17 +112,21 @@ const Register1 = () => {
                   borderWidth: 1,
                   borderBottomWidth: 1,
                 },
+                errors.name && errorStyle,
               ]}
               inputStyle={{
                 lineHeight: RFFontSize.sm + 0.5,
                 fontFamily: font.semiBold,
                 fontSize: RFFontSize.sm,
               }}
+              
               // leftIcon={<Sms />}
               placeholder="John Doe"
               labelStyle={[
-                styles.labelStyle,
+                labelStyle,
                 isFocused && {color: colors.mainColor},
+                errors.name&&{color:"red"}
+                
               ]}
               onChangeText={handleChange('name')}
               onFocus={() => setIsFocused(true)}
@@ -127,7 +134,8 @@ const Register1 = () => {
               errorMessage={errors.name}
               //   errorMessage='adlmladnn'
             />
-            <Spacer height={180} />
+            {/* <Spacer  height={20} /> */}
+            {errors.name &&   <Spacer  height={20} /> }
             <PrimaryButton
               text="Continue"
               color={values.name == '' ? colors.disabled : colors.white}
@@ -137,6 +145,7 @@ const Register1 = () => {
               }
               disabled={values.name == '' && true}
             />
+           
           </ViewContainer>
         </ScrollView>
       </>
@@ -152,13 +161,14 @@ const styles = StyleSheet.create({
     // borderBottomWidth: 0,
     borderBottomColor: 'red',
     borderWidth: 0,
-    padding: 6,
+     padding: 6,
     borderRadius: 10,
     width: wp(90),
     marginLeft: -10,
     paddingLeft: 20,
     borderBottomWidth: 0,
     backgroundColor: '#E4E7EC',
+    
   },
   labelStyle: {
     fontFamily: font.medium,

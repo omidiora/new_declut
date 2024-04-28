@@ -158,10 +158,13 @@ const AddItem1 = () => {
       <AddItemHeader
         borderBottom={true}
         title="Add Item"
+       
         rightComponent={true}
         rightText="1/4"
         fullBorderWidth={true}
         borderBottom1
+      
+        
      
         // borderBottom4
       />
@@ -174,7 +177,7 @@ const AddItem1 = () => {
           </SemiBoldText>
           <Spacer height={30} />
           <Input
-            label="Enter item name *"
+            label="Item Name *"
             onBlur={() => handleBlur('name')}
             onFocus={() => handleFocus('name')}
             inputContainerStyle={[
@@ -185,12 +188,13 @@ const AddItem1 = () => {
               errors.name && touched.name && errorStyle,
             ]}
             inputStyle={inputStyle}
-            placeholder="name"
+            placeholder="Enter item name"
             labelStyle={[
               labelStyle,
               values.nameFocused && {color: colors.mainColor},
               errors.name && touched.name && {color: 'red'},
             ]}
+            
             onChangeText={handleChange('name')}
             errorMessage={errors.name && errors.name}
           />
@@ -213,7 +217,7 @@ const AddItem1 = () => {
               errors.description && errorStyle,
             ]}
             inputStyle={inputStyle}
-            placeholder="description"
+            placeholder="Enter Description"
             labelStyle={[
               labelStyle,
               values.descriptionFocused && {color: colors.mainColor},
@@ -283,7 +287,7 @@ const AddItem1 = () => {
               errors.address && errorStyle,
             ]}
             inputStyle={inputStyle}
-            placeholder="address"
+            placeholder="Enter Item Address"
             labelStyle={[
               labelStyle,
               values.addressFocused && {color: colors.mainColor},
@@ -316,8 +320,9 @@ const AddItem1 = () => {
               style={{
                 marginVertical: 30,
                 // marginTop: HP(-0.1),
+                marginLeft:5
               }}>
-              <Text style={labelStyle}>Does the item have any defect(s)?</Text>
+              <Text style={labelStyle}>Does the item have any defect(s)? *</Text>
               <View
                 style={{
                   flexDirection: 'row',

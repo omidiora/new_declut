@@ -33,17 +33,19 @@ import Sport from '../../assets/images/category/sport.svg';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {SIZES} from '../../utils/theme/theme';
 import Setting from '../../assets/images/setting.svg';
-import {createAsyncThunk} from '@reduxjs/toolkit';
+import {addListener, createAsyncThunk} from '@reduxjs/toolkit';
 import {useDispatch} from 'react-redux';
 import {useGetInterestMutation} from '../../../redux/product/new_api';
 import {fetchApiData} from '../../../redux/product/api';
 import {useAppSelector} from '../../../redux/hook';
 import FastImage from 'react-native-fast-image';
-import {NAIRA_SYSMBOL, hp, wp} from '../../utils/general';
+import {NAIRA_SYSMBOL, convertDatetime, hp, shortenText, wp} from '../../utils/general';
 import Location from '../../assets/images/location.svg';
 import {FloatingAction} from 'react-native-floating-action';
 import {PostLoader} from 'react-native-preloader-shimmer';
 import ModalSeeAllComponent from './component/ModalSeeAllComponent';
+import Game from '../../assets/images/svg/gaming.svg';
+import EmptyImage from '../../assets/images/empty.svg';
 
 const LinksViewContainer = styled(Container)({
   marginTop: heightPixel(40),
@@ -101,11 +103,11 @@ const AllItem = ({onScroll}) => {
     });
   };
 
-
-
   return (
-    <BaseView backgroundColor={colors.bgColor}>
-      <ScrollView contentContainerStyle={{paddingBottom: 30}}  onScroll={onScroll}>
+    <BaseView backgroundColor={colors.bgColor} focusBarStyle={'dark-content'}>
+      <ScrollView
+        contentContainerStyle={{paddingBottom: 30}}
+        onScroll={onScroll}>
         <ViewContainer>
           <Spacer height={30} />
           <Row
@@ -116,7 +118,7 @@ const AllItem = ({onScroll}) => {
               Categories
             </BoldText>
             <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <SemiBoldText color={colors.mainColor} fontSize={fontSize.md}>
+              <SemiBoldText color={colors.mainColor} fontSize={fontSize.md-2}>
                 See All
               </SemiBoldText>
             </TouchableOpacity>
@@ -142,7 +144,7 @@ const AllItem = ({onScroll}) => {
               textColor={colors.primary}
             />
             <LinkView
-              image={<Sport width={RFValue(28)} height={RFValue(28)} />}
+              image={<Game width={RFValue(57)} height={RFValue(118)} />}
               text={'Toys & Games'}
               onPress={() => NavigateCategoryProduct(4, 'Toys & Games')}
             />
@@ -170,8 +172,9 @@ const AllItem = ({onScroll}) => {
           <FlatList
             contentContainerStyle={{
               flex: 1,
-              alignSelf: 'center',
+              // alignSelf: 'center',
               paddingBottom: 30,
+              justifyContent: 'flex-start', // A
               // paddingVertical: 20,
               // paddingHorizontal: 15,
             }}
@@ -186,6 +189,9 @@ const AllItem = ({onScroll}) => {
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             renderItem={({item}) => (
+             console.log('===================================='),
+             console.log(item.listed),
+             console.log('===================================='),
               <>
                 <TouchableOpacity
                   style={{marginBottom: 50}}
@@ -207,6 +213,25 @@ const AllItem = ({onScroll}) => {
                     }}
                     resizeMode={FastImage.resizeMode.cover}
                   />
+                  <View
+                    style={{
+                      position: 'absolute',
+                      // zIndex: 100,
+                      top: 108,
+                      backgroundColor: '#737772',
+                      padding:7,
+                      borderRadius:20,
+                      left:15,
+                      // paddingLeft:5,
+                      // paddingRight:5
+                      
+                      // opacity:0.5
+                    }}>
+                    <RegularText textAlign='center' color="white">
+                      {convertDatetime(item.listed)}{""} ago
+                    
+                    </RegularText>
+                  </View>
                   <Spacer />
                   <ItemCondition>
                     <SemiBoldText color={'white'} textAlign="center">
@@ -219,8 +244,9 @@ const AllItem = ({onScroll}) => {
                     <BoldText
                       color={colors.mediumGrey}
                       fontSize={14}
-                      lineHeight={21}>
-                      {item.item_name}
+                      lineHeight={21}
+                      numberOfLines={1}>
+                      {shortenText(item.item_name)}
                     </BoldText>
                     <Spacer height={5} />
                     <BoldText
@@ -232,11 +258,11 @@ const AllItem = ({onScroll}) => {
                     </BoldText>
                     <Spacer height={7} />
                     <View style={{flexDirection: 'row'}}>
-                      <View>
+                      <View style={{paddingTop:hp(0.2)}}>
                         <LocationIcon />
                       </View>
-                      <SemiBoldText fontSize={14} color={colors.mediumGrey}>
-                        {item.area} {item.state}
+                      <SemiBoldText textTransform='capitalize' fontSize={14} color={colors.mediumGrey}>
+                        {item.area}
                       </SemiBoldText>
                     </View>
                   </View>
@@ -255,15 +281,17 @@ const AllItem = ({onScroll}) => {
                     />
                   </View>
                 ) : (
-                  <>
+                  <View style={{alignSelf:'center'}}>
+                    <EmptyImage height={200} />
                     <Spacer />
                     <SemiBoldText
+                      textAlign="center"
                       fontSize={14}
                       color={colors.secondaryBlack}
                       style={styles.noItem}>
                       No item in your location yet !
                     </SemiBoldText>
-                  </>
+                  </View>
                 )}
               </>
             )}

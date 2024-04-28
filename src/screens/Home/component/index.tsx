@@ -209,7 +209,7 @@ export const LoanSubTitle = styled(RegularText)({
 export const LineComponent = styled.View({
   backgroundColor: '#667085',
   height: 0.28,
-  width: SIZES.width,
+  width: SIZES.width/1.1,
   alignSelf: 'center',
-  opacity: 0.2,
+  opacity: 1,
 });

@@ -79,7 +79,7 @@ const SearchInput = ({
             placeholder={placeholder}
             style={[
               styles.input,
-              showCancel && {marginLeft: WP(-1), width: WP(80)},
+              showCancel && {marginLeft: WP(-1)},
             ]}
             autoCapitalize="none"
             onChangeText={onChangeText}

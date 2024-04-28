@@ -38,8 +38,11 @@ const productApi = createSlice({
     orderHistoryPendingArray: [],
     deleteSucess: {},
     searchHistory: [],
-    rating: 0,
+    rating: null,
     ratingLoading: false,
+    experienceLoading: false,
+    experience: null,
+    profilePicture: {},
   },
   reducers: {
     fetchDataStart(state) {
@@ -264,6 +267,11 @@ const productApi = createSlice({
     editProductItemAction(state, action) {
       state.editProductListItem = action.payload;
     },
+    editUpdateValue(state, action) {
+      // Update any value based on the payload
+      const {key, value} = action.payload;
+      state[key] = value;
+    },
 
     ratingLoading(state) {
       state.ratingLoading = true;
@@ -275,11 +283,30 @@ const productApi = createSlice({
       state.error = null;
     },
     ratingFailure(state, action) {
-      state.rating = 0;
+      state.rating = null;
       state.ratingLoading = false;
       state.error = action.payload;
     },
+    experienceLoading(state) {
+      state.experienceLoading = true;
+    },
 
+    experienceSuccess(state, action) {
+      state.experience = action.payload;
+      state.experienceLoading = false;
+      state.error = null;
+    },
+    experienceFailure(state, action) {
+      state.experience = null;
+      state.experienceLoading = false;
+      state.error = action.payload;
+    },
+
+    updateProfilePicture(state, action) {
+      state.profilePicture = action.payload;
+    },
+
+    //
     //  editProduct
   },
 });
@@ -335,9 +362,16 @@ export const {
   orderHistoryPendingFailure,
   updateUploadProgress,
   editProductItemAction,
+  editUpdateValue,
+
   ratingLoading,
   ratingSuccess,
   ratingFailure,
+
+  experienceLoading,
+  experienceSuccess,
+  experienceFailure,
+  updateProfilePicture,
 } = productApi.actions;
 
 export const fetchApiData = () => async dispatch => {
@@ -471,14 +505,10 @@ export const DeleteProduct = (id: string) => (dispatch: Dispatch) => {
 };
 
 export const upLoadFileApi =
-  (
-    payload: upLoadFileApiPayload,
-    navigation: any,
-    Profile: any,
-    updateAvatar: any,
-  ) =>
+  (payload: upLoadFileApiPayload, navigation: any, Profile: any) =>
   async dispatch => {
-    console.log('starting', 'staring');
+    alert('upload api loading');
+    // alert ('starting', 'staring');
     try {
       dispatch(upLoadFileStart());
 
@@ -496,27 +526,31 @@ export const upLoadFileApi =
               (progressEvent.loaded * 100) / progressEvent.total,
             );
 
-            console.log(progress, 'progresss');
-
             // console.log(progress,'progress')
             // Dispatch an action to handle the progress
             dispatch(updateUploadProgress(progress));
           },
         },
       ); // Adjust endpoint as needed
-
+      // alert('222222upload api loading');
       // console.log(response?.data?.data, 'response');
-      console.log(response.data, 'dlamlfmaldsmfla');
       dispatch(upLoadFileSuccess(response));
       dispatch(updateItemSuccess3(response?.data?.data));
       // navigation.navig hate('Item4');
+      console.log('====================================');
+      console.log(response.data.data);
+      console.log('====================================');
+      // alert('yes!!!');
       if (response.data.data && !Profile) {
         navigation.navigate('Item4');
       } else {
-        //  alert('yes!!!');
-        updateAvatar();
+        alert('nonooooooo!!!!!!!!!!!!!!!!');
+        dispatch(updateProfilePicture(response.data));
+
+        // updateAvatar();
       }
     } catch (error) {
+      // alert('noi!!!');
       console.log(error, 'error from upload file');
       dispatch(upLoadFileFailure(error));
     }
@@ -638,18 +672,18 @@ export const fetchCategoryProductById = payload => async dispatch => {
 };
 
 export const settingApi = (payload, navigation) => async dispatch => {
-  console.log(navigation);
+  payload.navigation.goBack();
   try {
+    dispatch(fetchDataStart());
     dispatch(settingLoading());
     await axiosInstance
       .post(`${SERVER_URL}/item/listing/settings`, payload)
       .then(response => {
         dispatch(settingSuccess(response?.data));
         AlertNofity('Setting', 'Setting Updated Successfully');
-        navigation.goBack();
       })
       .catch(error => {
-        console.log(error.data, 'error from settting');
+        AlertNofityError('Error', 'Something went wrong');
         dispatch(settingFailure(error));
       });
   } catch (error) {
@@ -681,15 +715,36 @@ export const ratingApi = (payload, navigation) => async dispatch => {
       .post(`${SERVER_URL}/rate-seller/${payload.seller_id}`, payload)
       .then(response => {
         dispatch(ratingSuccess(response.data));
-        AlertNofity('Setting', 'Setting Updated Successfully');
-        navigation.goBack();
+        AlertNofity('Rating', 'Seller rated successfully');
+        // navigation.goBack();
       })
       .catch(error => {
-        console.log(error.data, 'error from settting');
-        dispatch(ratingFailure());
+        AlertNofityError('Error', 'Something went wrong');
+        dispatch(ratingFailure(error.message));
       });
   } catch (error) {
+    AlertNofityError('Error', 'Something went wrong');
     dispatch(ratingFailure(error.message));
+  }
+};
+
+export const experienceApi = (payload, navigation) => async dispatch => {
+  try {
+    dispatch(experienceLoading());
+    await axiosInstance
+      .post(`${SERVER_URL}/rate-seller/${payload.seller_id}`, payload)
+      .then(response => {
+        dispatch(experienceSuccess(response.data));
+        AlertNofity('experience', 'Seller rated successfully');
+        // navigation.goBack();
+      })
+      .catch(error => {
+        AlertNofityError('Error', 'Something went wrong');
+        dispatch(experienceFailure(error.message));
+      });
+  } catch (error) {
+    AlertNofityError('Error', 'Something went wrong');
+    dispatch(experienceFailure(error.message));
   }
 };
 

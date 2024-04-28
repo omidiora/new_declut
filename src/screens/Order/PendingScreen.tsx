@@ -16,6 +16,7 @@ import {useAppDispatch, useAppSelector} from '../../../redux/hook';
 import {orderHistoryPendingApi} from '../../../redux/product/api';
 import moment from 'moment';
 import {color} from '@rneui/base';
+import EmptyImage from '../../assets/images/empty.svg';
 
 const PendingScreen = () => {
   const {colors} = useTheme();
@@ -40,7 +41,12 @@ const PendingScreen = () => {
           renderItem={({item}) => (
             console.log(item),
             (
-              <>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('OrderDetailScreen', {
+                    params: item,
+                  })
+                }>
                 <View
                   style={{
                     marginBottom: 50,
@@ -103,10 +109,20 @@ const PendingScreen = () => {
                 <View style={{top: -30}}>
                   <LineComponent />
                 </View>
-              </>
+              </TouchableOpacity>
             )
           )}
-          ListEmptyComponent={() => <></>}
+          ListEmptyComponent={() => (
+            <View style={{alignSelf: 'center'}}>
+              <EmptyImage height={350} />
+              <SemiBoldText
+                fontSize={14}
+                textAlign="center"
+                color={colors.secondaryBlack}>
+                You have no pending order!!!
+              </SemiBoldText>
+            </View>
+          )}
         />
       </ViewContainer>
     </BaseView>

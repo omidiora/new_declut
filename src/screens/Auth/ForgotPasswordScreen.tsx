@@ -7,7 +7,7 @@ import {color} from '@rneui/base';
 import {TopHeader} from '../../component/view/headers/topHeader';
 import styled from '@emotion/native';
 import {Input} from '@rneui/themed';
-import {InputContainerStyle} from './styling';
+import {InputContainerStyle, InputContainerStyle2, labelStyle} from './styling';
 import {useFormik} from 'formik';
 import {RFFontSize, fontSize} from '../../utils/text';
 import {font} from '../../utils/theme/fonts';
@@ -53,9 +53,15 @@ const ForgotPasswordScreen = () => {
     })
       .unwrap()
       .then(response => {
+        console.log(response,'respnse');
+        
         if (response?.code == 200) {
           AlertNofity('Success', 'Check your email for the otp code.');
           navigate('otp');
+        }
+        else{
+          AlertNofityError('Error', response.message);
+
         }
         console.log(response, 'response');
       })
@@ -66,7 +72,7 @@ const ForgotPasswordScreen = () => {
 
   console.log(values.email)
   return (
-    <BaseView color={colors.bgColor}>
+    <BaseView color={colors.bgColor} focusBarStyle={"dark-content"}>
       <TopHeader
         title={'Forgot Password'}
         rightComponent={true}
@@ -85,7 +91,7 @@ const ForgotPasswordScreen = () => {
             <Input
               label="Enter your email to reset your password"
               inputContainerStyle={[
-                InputContainerStyle,
+                InputContainerStyle2,
                 isFocused && {
                   borderColor: colors.mainColor,
                   borderWidth: 1,
@@ -110,7 +116,7 @@ const ForgotPasswordScreen = () => {
               // leftIcon={<Sms />}
               placeholder="Email"
               labelStyle={[
-                styles.labelStyle,
+                labelStyle,
 
                 isFocused && {color: colors.mainColor},
                 values.email && {
@@ -123,11 +129,13 @@ const ForgotPasswordScreen = () => {
               onChangeText={handleChange('email')}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
-              errorMessage={touched.email && errors.email}
+              errorMessage={ errors.email}
               //   errorMessage='adlmladnn'
             />
 
-            <Spacer height={120} />
+            {/* <Spacer height={110} /> */}
+
+            {errors.email &&<Spacer height={20}/>}
 
             <PrimaryButton
               text="Continue"

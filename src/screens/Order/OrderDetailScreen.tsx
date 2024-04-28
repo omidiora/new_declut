@@ -141,7 +141,7 @@ const OrderDetailScreen = ({route}) => {
 
   return (
     <BaseView backgroundColor={colors.bgColor}>
-      <TopHeader borderBottom title={route?.params?.params?.order?.order_no} />
+      <TopHeader title={route?.params?.params?.order?.order_no} />
       <ScrollView>
         <ViewContainer paddingVertical={20} paddingHorizontal={27}>
           <Row justifyContent="space-between" disabled={true}>
@@ -279,12 +279,15 @@ const OrderDetailScreen = ({route}) => {
           />
           <Spacer />
         </ViewContainer>
-        <Modal 
-          transparent={true}
-           visible={isModal}
-           backdropColor="grey"
-          hasBackdrop={true}
-           backdropOpacity={1}
+       
+      </ScrollView>
+
+      <Modal 
+      isVisible={isModal}
+          // transparent={true}
+          //  backdropColor="grey"
+          // hasBackdrop={true}
+          //  backdropOpacity={1}
           >
           <ModalContainer>
             <ViewContainer>
@@ -331,9 +334,9 @@ const OrderDetailScreen = ({route}) => {
 
         <Modal 
          transparent={false}
-          visible={isModal2}
+          isVisible={isModal2}
           //  backdropColor="lightGrey"
-          hasBackdrop={true}
+          // hasBackdrop={true}
           //  backdropOpacity={211}
           
           
@@ -363,13 +366,12 @@ const OrderDetailScreen = ({route}) => {
                 title="Close"
                 onPress={() => {
                   setModalVisible2(false);
-                  navigation.navigate("BottomNavigation");
+                  navigation.navigate("BottomTabNavigation");
                 }}
               />
             </ViewContainer>
           </ModalContainer>
         </Modal >
-      </ScrollView>
     </BaseView>
   );
 };

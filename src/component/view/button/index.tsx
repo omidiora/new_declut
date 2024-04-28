@@ -43,10 +43,10 @@ const SolidView = styled.TouchableOpacity<ButtonStylePropsExtra>(
     alignItems: 'center',
     backgroundColor,
     borderColor,
-    paddingVertical: RFValue(15),
+    // paddingVertical: RFValue(15),
     maxHeight: 70,
     opacity: disabled ? 0.7 : 1,
-    height: 59,
+     height:58,
     borderRadius: 13,
   }),
 );
@@ -221,7 +221,7 @@ export const OutlineButton: React.FC<NewButtonProps> = ({
 }) => (
   <Btn
     title={
-      <BoldText fontSize={fontSize || 16} color={color}>
+      <BoldText fontSize={fontSize || 16} color={color} textAlign='center'>
         {title}
       </BoldText>
     }

@@ -22,7 +22,7 @@ const BottomTabNavigation = () => {
   return (
     <Tab.Navigator
       initialRouteName="Home"
-      activeColor={'green'}
+      activeColor={'#02A89E'}
       inactiveColor={'black'}
       theme={theme}
       barStyle={{

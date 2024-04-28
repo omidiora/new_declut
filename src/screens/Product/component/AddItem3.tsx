@@ -33,7 +33,8 @@ import ProgressIndicator from '../../../old/component/ProgressIndicator';
 import HeaderComponent from '../../../old/component/HeaderComponent';
 import {AddItemHeader} from '../../../component/view/headers/AddItemHeader';
 import {PrimaryButton} from '../../../component/view/button';
-import { Spacer } from '../../../component/view';
+import {Spacer, ViewContainer} from '../../../component/view';
+import AddItemCardInfo from '../../../component/AddItemCardInfo';
 
 const data = [
   {label: 'Lagos', value: '1', search: 'Lagos'},
@@ -50,6 +51,18 @@ const AddItem3 = () => {
   const {data, loading, error, item} = useAppSelector(state => state.product);
   const navigation = useNavigation();
   const {updateUploadProgress} = useSelector(state => state.product);
+
+  // const getFileExtension = (uri) => {
+  //   const parts = uri.split('.');
+  //   const extension = parts[parts.length - 1];
+  //   return extension.toLowerCase();
+  // };
+
+  // const extensions = uris.map(item => {
+  //   const uri = imageTypes.uri;
+  //   const extension = getFileExtension(uri);
+  //   return { ...item, extension };
+  // });
 
   const SetItemProduct = (values: any) => {
     dispatch(
@@ -179,6 +192,8 @@ const AddItem3 = () => {
     // navigation.navigate("Additem4")
   };
 
+  console.log(imageTypes, 'videoTypesvideoTypes');
+
   return (
     <View style={styles.container}>
       <AddItemHeader
@@ -189,7 +204,7 @@ const AddItem3 = () => {
         fullBorderWidth={true}
         borderBottom1
         borderBottom2
-         borderBottom3
+        borderBottom3
         // borderBottom4
       />
 
@@ -201,16 +216,14 @@ const AddItem3 = () => {
         contentContainerStyle={{paddingBottom: wp(30)}}>
         <View style={styles.subContainer}>
           <Text style={styles.addItem}>Media</Text>
-          <Note
-            width={410}
-            height={hp(11)}
-            //  width={(810)}
-            // height={(106)}
-            style={{
-              alignSelf: 'center',
-              marginLeft: -2,
-            }}
-          />
+
+          <ViewContainer>
+            <AddItemCardInfo
+              text="Share 3 clear pictures (front, back, side) & a video of your item.
+        Highlight its pristine condition and test its functionality. It helps
+        buyers make informed decisions. Happy selling!"
+            />
+          </ViewContainer>
           {/* <Image source={BODY_IMAGE.note} style={styles.img} /> */}
 
           {imageTypes?.length > 0 ? (
@@ -225,9 +238,10 @@ const AddItem3 = () => {
                     bottom: 3,
                     fontFamily: FontFamily.regular,
                     color: COLOR.lightGrey,
+                    fontSize: 12,
                   },
                 ]}>
-                {getTotalFileSize(imageTypes).toFixed(2)}Mb
+                {getTotalFileSize(imageTypes).toFixed(2)}mb
               </Text>
               <TouchableWithoutFeedback
                 onPress={() => ImagePicker()}
@@ -278,8 +292,23 @@ const AddItem3 = () => {
                       fontFamily: FontFamily.regular,
                       color: COLOR.lightGrey,
                       padding: 0,
+                      paddingBottom: 3,
+                      left: 6,
                     },
                   ]}>
+                  <Text numberOfLines={1} style={[styles.item_name]}>
+                    {item?.item_name}
+                  </Text>
+                </Text>
+                <Text
+                  style={{
+                    bottom: 11,
+                    fontFamily: FontFamily.regular,
+                    color: COLOR.lightGrey,
+                    fontSize: 12,
+                    left:5
+                  }}>
+                  {' '}
                   {getTotalFileSize(videoTypes).toFixed(2)}Mb
                 </Text>
               </TouchableWithoutFeedback>
@@ -298,12 +327,12 @@ const AddItem3 = () => {
 
           <View></View>
 
-          <Spacer height={50}/>
+          <Spacer height={50} />
 
           <View style={styles.btn}>
             <PrimaryButton
-            onPress={()=>onSubmitUrl()}
-            text='Next'
+              onPress={() => onSubmitUrl()}
+              text="Next"
               backgroundColor={
                 imageTypes.length !== 3 || !Object.keys(videoTypes).length
                   ? COLOR.lightgrey2
@@ -438,7 +467,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 100,
     bottom: hp(2.5),
-    left: wp(4),
+    left: wp(2),
+    paddingBottom: 10,
   },
   modalBackground: {
     backgroundColor: 'white', // semi-transparent background color
@@ -447,7 +477,7 @@ const styles = StyleSheet.create({
     elevation: 2, // elevation for shadow effect
     borderRadius: 10,
     width: wp(90),
-    height: hp(27),
+    height: hp(38),
     alignSelf: 'center',
     marginVertical: 10,
     padding: 35,

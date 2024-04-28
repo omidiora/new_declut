@@ -24,6 +24,9 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useRegisterMutation} from '../../../redux/auth/api';
 import SuccessRegisterModal from '../../component/view/SuccessRegisterModal ';
 import {AlertNofityError} from '../../utils/notify';
+import { errorStyle } from './styling';
+import SmallDeclut from '../../assets/images/smallBg.svg';
+
 
 const DeclutContainer = styled.View({
   alignItems: 'center',
@@ -102,7 +105,7 @@ const CreatePassword = () => {
   console.log(values?.password, '1');
   console.log('====================================');
   return (
-    <BaseView backgroundColor={colors.bgColor}>
+    <BaseView backgroundColor={colors.bgColor} focusBarStyle={'dark-content'}>
       <>
         <View style={{height: 40}}>
           <TopHeader
@@ -122,19 +125,21 @@ const CreatePassword = () => {
               <Row
                 alignItems="center"
                 flexDirection={isFocused || isFocused2 ? 'row' : 'column'}
-                style={{right: isFocused || isFocused2 ? 0 : 0, zIndex: 100}}>
-                <Declut />
+                style={{left: isFocused || isFocused2 ? 12 : 0, zIndex: 100}}>
+             {isFocused || isFocused2 ?<SmallDeclut/>:    <Declut />}
 
-                <Spacer height={20} />
-                <HSpacer />
-                {isFocused || (isFocused2 && <HSpacer width={10} />)}
-                <SemiBoldText
+                <Spacer height={30} />
+                {/* <HSpacer /> */}
+                {isFocused || (isFocused2 && <HSpacer  />)}
+               <ViewContainer>
+               <SemiBoldText
                   textAlign={isFocused || isFocused2 ? 'left' : 'center'}
                   fontSize={lineHeight.sm}
                   color="black">
-                  Lets get your account secured. This is the last step,
-                  we promise.
+                  Lets get your account secured. This is the last
+                  step, We promise.
                 </SemiBoldText>
+               </ViewContainer>
               </Row>
             </DeclutContainer>
             <Spacer height={70} />
@@ -155,18 +160,22 @@ const CreatePassword = () => {
                   borderColor: colors.lightGrey,
                   borderWidth: 1,
                 },
+               
+
               ]}
               // leftIcon={<Sms />}
               placeholder="Password"
               labelStyle={[
                 styles.labelStyle,
                 isFocused && {color: colors.mainColor},
+              
                 values.password && {
                   color: 'black',
                 },
+                errors.password&&{color:"red"}
               ]}
               onChangeText={handleChange('password')}
-              bottomText={touched.password && errors.password}
+              bottomText={errors.password}
               bottomTextOnError={false}
               inputError={true}
             />
@@ -187,25 +196,28 @@ const CreatePassword = () => {
                   borderColor: colors.lightGrey,
                   borderWidth: 1,
                 },
+                errors.confirmPassword && errorStyle,
               ]}
               // leftIcon={<Sms />}
-              placeholder="0000 000 0000"
+              placeholder="Confirm Password"
               labelStyle={[
                 styles.labelStyle,
                 isFocused2 && {color: colors.mainColor},
+                errors.confirmPassword&&{color:"red"}
               ]}
               onChangeText={handleChange('confirmPassword')}
               setIsFocused={() => setIsFocused2(true)}
               setIsBlur={() => setIsFocused2(false)}
-              bottomText={touched.confirmPassword && errors.confirmPassword}
+              bottomText={ errors.confirmPassword}
               bottomTextOnError={false}
               inputError={true}
 
               //   bottomText='adlmladnn'
             />
-            <Spacer height={130} />
+          {errors.confirmPassword &&  <Spacer height={5}/>}
 
             <PrimaryButton
+            style={{width:'104%',alignSelf:'center',marginTop:20}}
               text="Complete Sign Up"
               color={
                 (values.password || values.confirmPassword) == ''
@@ -221,7 +233,7 @@ const CreatePassword = () => {
               disabled={
                 (values.password || values.confirmPassword) == '' && true
               }
-              loading={isLoading}
+              isLoading={isLoading}
             />
           </ViewContainer>
         </KeyboardAwareScrollView>

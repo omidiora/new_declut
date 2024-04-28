@@ -1,5 +1,5 @@
 import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {FlatList} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {SIZES} from '../../utils/theme/theme';
@@ -31,6 +31,9 @@ import TrashIcon from '../../assets/images/trash.svg';
 import EditIcon from '../../assets/images/edit.svg';
 import Shimmer from 'react-native-shimmer-kit';
 import {FloatingAction} from 'react-native-floating-action';
+import {COLOR, HP} from '../../old/Util/Util';
+import NewMyPost from './NewMyPost';
+import {useAsyncStorage} from '@react-native-async-storage/async-storage';
 const LocationIcon = styled(Location)({
   marginTop: 1,
   // paddingHorizontal:10,
@@ -49,9 +52,23 @@ const MyPost = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [productId, setproductId] = React.useState(null);
+  const {setItem, getItem} = useAsyncStorage('@has_user_account');
+  const [has_account, setHasAccount] = React.useState(null);
 
+  const checkIfUserHaveSetAccount = async () => {
+    const item = await getItem();
+    console.log('====================================');
+    console.log(item, '111111');
+    console.log('====================================');
+    setHasAccount(JSON.parse(item));
+  };
+
+  useEffect(() => {}, [has_account]);
+
+  //
   useFocusEffect(
     React.useCallback(() => {
+      checkIfUserHaveSetAccount();
       dispatch(MyPostItem());
     }, []),
   );
@@ -75,169 +92,66 @@ const MyPost = () => {
     });
   };
 
-  console.log('====================================');
-  console.log(myPost?.data ,'myPost?.data ');
-  console.log('====================================');
-  return (
-    <BaseView backgroundColor={colors.bgColor}>
-      <Spacer />
-      <ViewContainer backgroundColor={colors.bgColor}>
-        <View>
-          <FlatList
-            // contentContainerStyle={{paddingTop:10}}
-            data={
-              typeof myPost?.data === 'object'
-                ? Object.values(myPost?.data ?? {})
-                : myPost?.data
-            }
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            renderItem={({item}) => (
-              <>
-                <View style={{marginBottom: 50, flexDirection: 'row'}}>
-                  <FastImage
-                    style={{
-                      width: SIZES.width / 3,
-                      height: 100,
-                      marginHorizontal: 5,
-                      borderRadius: 12,
-                    }}
-                    source={{
-                      uri: item.item_image,
-                      priority: FastImage.priority.high,
-                    }}
-                    resizeMode={FastImage.resizeMode.cover}
-                  />
-                  <Spacer />
-                  <View>
-                    <View style={{left: 10}}>
-                      <HSpacer />
-                      <BoldText
-                        color={colors.mediumGrey}
-                        fontSize={14}
-                        lineHeight={21}>
-                        <Text numberOfLines={0.1} style={{flexShrink: 1}}>
-                          {ShowFourteenWords(item.item_name)}
-                        </Text>
-                      </BoldText>
-                      <Spacer height={5} />
-                      <BoldText
-                        color={colors.darkBlack}
-                        fontSize={14}
-                        lineHeight={21}>
-                        {NAIRA_SYSMBOL}
-                        {item.price}
-                      </BoldText>
-                      <Spacer height={7} />
-                      <View style={{flexDirection: 'row'}}>
-                        <View>
-                          <LocationIcon />
-                        </View>
-                        <BoldText fontSize={14} color={colors.mediumGrey}>
-                          {item.area}
-                        </BoldText>
-                      </View>
-                      <Spacer height={7} />
-                      <View>
-                        <SemiBoldText color="#A28300">
-                          Posted
-                          <SemiBoldText
-                            lineHeight={15}
-                            fontSize={10}
-                            color="#A28300">
-                            {' '}
-                            {item.listed}
-                          </SemiBoldText>
-                        </SemiBoldText>
-                      </View>
-                    </View>
-                  </View>
-                  <HSpacer width={78} />
-                  <TouchableOpacity
-                    onPress={() => {
-                      setproductId(item);
-                      refRBSheet.current.open();
-                    }}>
-                    <MaterialCommunityIcons
-                      name="dots-vertical"
-                      size={25}
-                      color={'black'}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </>
-            )}
-            ListEmptyComponent={() => <></>}
-          />
-        </View>
-      </ViewContainer>
+  console.log(has_account, 'aknkdnakndkn');
 
-      <RBSheet
-        ref={refRBSheet}
-        useNativeDriver={false}
-        customStyles={{
-          wrapper: {
-            backgroundColor: 'transparent',
-          },
-          draggableIcon: {
-            backgroundColor: '#000',
-          },
-        }}
-        draggable={true}
-        customModalProps={{
-          animationType: 'slide',
-          statusBarTranslucent: true,
-        }}
-        customAvoidingViewProps={{
-          enabled: false,
-        }}>
-        <ActionContainer onPress={() => EditItem(productId?.id)}>
-          <EditIcon />
-          <HSpacer width={10} />
-          <BoldText color={'black'} marginTop={5}>
-            Edit
-          </BoldText>
-        </ActionContainer>
-        <ActionContainer
-          style={styles.row}
-          onPress={() => {
-            Alert.alert('', 'Are you sure you want to delete this item?', [
-              {
-                text: 'Cancel',
-                onPress: () => console.log('Ask me later pressed'),
-              },
-              {
-                text: 'Confirm',
-                onPress: () => Delete(productId?.id),
-                style: 'ok',
-              },
-            ]);
-          }}>
-          <TrashIcon />
-          <HSpacer width={10} />
-          <BoldText color={'black'} marginTop={5}>
-            Delete
-          </BoldText>
-        </ActionContainer>
-      </RBSheet>
-      <Spacer height={350} />
+  // console.log('====================================');
+  // console.log(myPost?.data, 'myPost?.data ');
+  // console.log('====================================');
+  return (
+    <View style={{flex: 1}}>
+      <NewMyPost />
+      <View style={styles.bodyImage}>
+        {/* <Image source={BODY_IMAGE.emptyMyPost} />
+        <Text style={styles.plus}>
+          You don’t have any items listed. Use the plus ‘+’ button below to add
+          an item.
+        </Text> */}
+      </View>
       <FloatingAction
         animated={false}
         showBackground={false}
-        color={colors.mainColor}
+        color={COLOR.mainColor}
         distanceToEdge={{
-          vertical: 130,
-          horizontal: 40,
+          vertical: 110,
+          horizontal: 20,
         }}
         actions={[]}
         onPressMain={name => {
-          navigation.navigate('ProductNavigation');
+          if (JSON.parse(has_account)) {
+            navigation.navigate('ProductNavigation');
+          } else {
+            Alert.alert(
+              'Product',
+              'You need to add your bank detail before you can create a product. This is the account the buyer will be paying into.',
+              [
+                {
+                  text: 'Cancel',
+                  onPress: () => console.log('Cancel Pressed'),
+                  style: 'cancel',
+                },
+                {
+                  text: 'OK',
+                  onPress: () =>
+                    navigation.navigate('Payment', {
+                      screen: 'PaymentForm',
+                    }),
+                },
+              ],
+            );
+          }
         }}
       />
-    </BaseView>
+      {/* </BaseView> */}
+    </View>
   );
 };
 
 export default MyPost;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  bodyImage: {
+    alignSelf: 'center',
+    paddingTop: HP(4),
+    alignItems: 'center',
+  },
+});

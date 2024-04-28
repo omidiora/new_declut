@@ -18,13 +18,14 @@ const ProfileNavigation = () => {
       <Stack.Screen name="MyProfile" component={ProfileScreen} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="EmailSetting" component={EmailSetting} />
-      {/* 
-      <Stack.Screen name="My Posts" component={Post} />
-    
       <Stack.Screen
         name="PushNotification"
         component={PushNotificationSetting}
-      /> */}
+      /> 
+      {/* 
+      <Stack.Screen name="My Posts" component={Post} />
+    
+     
       {/* <Stack.Screen name="LicenseScreen" component={LicenseScreen} /> */}
     </Stack.Navigator>
   );

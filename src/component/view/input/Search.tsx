@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from '@emotion/native';
 import  Ionicons  from 'react-native-vector-icons/Ionicons';
 import { CompositeNavigationProp, useNavigation, useTheme } from '@react-navigation/native';
-import { heightPixel, widthPixel } from '../../../utils/theme/pxToDpConvert';
+import { fontPixel, heightPixel, widthPixel } from '../../../utils/theme/pxToDpConvert';
 import { TextInput } from '.';
 import { font } from '../../../utils/theme/fonts';
 import { SemiBoldText } from '../../../utils/text';

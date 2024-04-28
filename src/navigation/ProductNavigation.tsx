@@ -3,6 +3,10 @@ import AddItem1 from '../screens/Product/component/AddItem1';
 import AddItem2 from '../screens/Product/component/AddItem2';
 import AddItem3 from '../screens/Product/component/AddItem3';
 import AddItem4 from '../screens/Product/component/AddItem4';
+import EditItem1 from '../screens/Product/EditComponent/EditItem1';
+import EditItem2 from '../screens/Product/EditComponent/EditItem2';
+import EditItem3 from '../screens/Product/EditComponent/EditItem3';
+import EditItem4 from '../screens/Product/EditComponent/EditItem4';
 // import AddItem2 from '../Screen/Product/component/AddItem2';
 // import AddItem3 from '../Screen/Product/component/AddItem3';
 // import AddItem4 from '../Screen/Product/component/AddItem4';
@@ -28,12 +32,12 @@ const ProductNavigation = () => {
     
       */}
 
-      {/* <Stack.Group>
+      <Stack.Group>
         <Stack.Screen name="EditItem1" component={EditItem1} />
         <Stack.Screen name="EditItem2" component={EditItem2} />
         <Stack.Screen name="EditItem3" component={EditItem3} />
         <Stack.Screen name="EditItem4" component={EditItem4} />
-      </Stack.Group> */}
+      </Stack.Group>
     </Stack.Navigator>
   );
 };

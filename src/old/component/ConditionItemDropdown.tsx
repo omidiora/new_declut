@@ -86,7 +86,7 @@ export default ConditionItemDropdown;
 const styles = StyleSheet.create({
   dropdown: {
     backgroundColor: '#E4E7EC',
-    height: 52.2,
+    height: 54.2,
     width: '100%',
     borderRadius: WP(2),
     flexDirection: 'row',
@@ -107,16 +107,30 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   text: {
-    padding: 20,
-    color: COLOR.lightGrey,
+    // padding: 20,
+    // color: COLOR.lightGrey,
    
+    // zIndex: 500,
+    // lineHeight: RFFontSize.sm + 0.5,
+    // fontFamily: font.semiBold,
+    // fontSize: RFFontSize.sm,
+    // opacity: 0.45,
+    color: COLOR.black,
+    // fontWeight: 'bold',
+    padding: 22,
     zIndex: 500,
+    textAlign: 'center',
+    // fontSize: WP(3),
+    paddingTop: 22,
+
     lineHeight: RFFontSize.sm + 0.5,
     fontFamily: font.semiBold,
     fontSize: RFFontSize.sm,
     opacity: 0.45,
+    paddingBottom:10
 
   },
+
   text2: {
     color: COLOR.black,
     fontWeight: 'bold',
@@ -124,5 +138,7 @@ const styles = StyleSheet.create({
     zIndex: 500,
     textAlign: 'center',
     fontSize: WP(3),
+    paddingBottom:2,
+    height:170
   },
 });

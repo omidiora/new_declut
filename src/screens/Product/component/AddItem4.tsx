@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Platform, Animated} from 'react-native';
+import {StyleSheet, Text, View, Platform, Animated, SafeAreaView} from 'react-native';
 import React, {useState} from 'react';
 import HeaderComponent from '../../../old/component/HeaderComponent';
 
@@ -29,7 +29,8 @@ import {errorStyle, InputContainerStyle2, labelStyle} from '../../Auth/styling';
 import {Input} from '@rneui/base';
 import Naira from '../../../assets/images/naira.svg';
 import {PrimaryButton} from '../../../component/view/button';
-import { AddItemHeader } from '../../../component/view/headers/AddItemHeader';
+import {AddItemHeader} from '../../../component/view/headers/AddItemHeader';
+import AddItemCardInfo from '../../../component/AddItemCardInfo';
 
 const data = [
   {label: 'Neatly Used (Old)', value: 'Neatly Used'},
@@ -61,7 +62,8 @@ const AddItem4 = () => {
   console.log(discountPice, 'discountPice');
   console.log('====================================');
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+   <>
+     <View style={{flex: 1, backgroundColor: '#F9FAFB'}}>
       <View style={styles.header}>
         <AddItemHeader
           borderBottom={true}
@@ -93,14 +95,21 @@ const AddItem4 = () => {
         style={styles.container}
         contentContainerStyle={{paddingBottom: 13}}>
         <View style={styles.subContainer}>
-          <Spacer height={35}/>
+          <Spacer height={35} />
           <View style={{marginLeft: 20, marginTop: 10}}>
             <SemiBoldText color={colors.secondaryBlack} fontSize={16}>
               Pricing
             </SemiBoldText>
           </View>
-          <View style={{marginLeft: 20}}>
-            <Pricing width={WP(90)} height={HP(20)} />
+          <View style={{paddingBottom:30,paddingTop:10}} >
+            {/* <Pricing width={WP(90)} height={HP(20)} /> */}
+            <ViewContainer>
+            <AddItemCardInfo
+              text={
+                "Set your item's price, and we'll apply an 8% processing fee. Your final earning will be automatically calculated just below the price input box. Start selling with ease!"
+              }
+            />
+            </ViewContainer>
           </View>
           <Formik
             // validationSchema={ItemSchema1}
@@ -143,7 +152,7 @@ const AddItem4 = () => {
                     }}
                     leftIcon={<Naira />}
                     // leftIcon={<Sms />}
-                    placeholder="Price"
+                    placeholder="Enter Price"
                     labelStyle={[
                       labelStyle,
                       {
@@ -217,7 +226,7 @@ const AddItem4 = () => {
                     //   errorMessage='adlmladnn'
                   />
 
-                  <Spacer height={250} />
+                  {/* <Spacer height={250} /> */}
                   <PrimaryButton
                     text="Next"
                     backgroundColor={
@@ -233,6 +242,7 @@ const AddItem4 = () => {
         </View>
       </KeyboardAwareScrollView>
     </View>
+   </>
   );
 };
 

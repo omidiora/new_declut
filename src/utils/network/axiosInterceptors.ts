@@ -3,7 +3,7 @@ import axios from 'axios';
 import {getUserAsyncStorage} from './helpers';
 
 const axiosInstance = axios.create({
-  baseURL: 'https://declut.mobislimited.com/api/v1',
+  baseURL: "https://declutstg.vereinigt.org/api/v1",
 });
 
 // Request interceptor: Modify request config before sending

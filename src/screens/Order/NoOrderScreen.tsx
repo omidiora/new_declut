@@ -15,11 +15,19 @@ import {
   ViewContainer,
 } from '../../component/view';
 import {TopHeader} from '../../component/view/headers/topHeader';
-import {BoldText, RegularText, SemiBoldText, fontSize} from '../../utils/text';
+import {
+  BoldText,
+  MediumText,
+  RegularText,
+  SemiBoldText,
+  fontSize,
+} from '../../utils/text';
 import Entypo from 'react-native-vector-icons/Entypo';
 import DummyImage from '../../assets/images/image.svg';
 import {
   NAIRA_SYSMBOL,
+  OnlyFirstWordCapital,
+  RemoveLastName,
   callNumber,
   hp,
   removeFirstName,
@@ -35,6 +43,8 @@ import moment from 'moment';
 import {useAsyncStorage} from '@react-native-async-storage/async-storage';
 import {useSelector} from 'react-redux';
 import UserAvatar from 'react-native-user-avatar';
+import Octicons from 'react-native-vector-icons/Octicons';
+import FastImage from 'react-native-fast-image';
 
 const LocationIcon = styled(Location)({
   top: 5,
@@ -79,23 +89,39 @@ const NoOrderScreen = ({route}) => {
     readItemFromStorage();
   }, []);
 
-  console.log(value, 'ro11ute');
+  console.log(route?.params?.params, 'ro11ute');
   return (
     <BaseView backgroundColor={colors.bgColor}>
-      <TopHeader borderBottom title={route?.params?.params?.order?.order_no} />
+      <TopHeader title={route?.params?.params?.order?.order_no} />
       <ScrollView>
         <ViewContainer paddingVertical={20} paddingHorizontal={27}>
           <Row justifyContent="space-between" disabled={true}>
             <SemiBoldText fontSize={fontSize.md} color={colors.darkBlack}>
               Item paid for
             </SemiBoldText>
-            <SemiBoldText fontSize={fontSize.sm + 2} color={colors.orange}>
-              {route?.params?.params?.order?.order_state}
-            </SemiBoldText>
+            <Row disabled>
+              <MediumText fontSize={fontSize.sm + 2} color={'#F79009'}>
+                {OnlyFirstWordCapital(
+                  route?.params?.params?.order?.order_state,
+                )}
+              </MediumText>
+
+              <View style={{marginTop:hp(0.1), marginLeft: 5}}>
+                <Octicons name="dot-fill" size={18} color={'#F79009'} />
+              </View>
+            </Row>
           </Row>
           <Spacer height={40} />
           <Row disabled={true} flexDirection="row">
-            <DummyImage />
+            {/* <DummyImage /> */}
+            <FastImage
+              style={{width: 100, height: 100,borderRadius:12}}
+              source={{
+                uri: route?.params?.params?.item_media?.[0]?.filepath,
+                priority: FastImage.priority.normal,
+              }}
+              resizeMode={FastImage.resizeMode.contain}
+            />
             <HSpacer />
             <View flexDirection="column">
               <SemiBoldText
@@ -109,11 +135,12 @@ const NoOrderScreen = ({route}) => {
                 {route?.params?.params?.price}
               </SemiBoldText>
               <Spacer height={10} />
-              <SemiBoldText color={colors.mediumGrey}>
-                <LocationIcon />
+             <Row disabled >
+             <LocationIcon />
+             <SemiBoldText style={{marginLeft:4}} marginTop={5} color={colors.mediumGrey}>
                 {route?.params?.params?.area}
-                {route?.params?.params?.state}
               </SemiBoldText>
+             </Row>
               <Spacer height={10} />
               <SemiBoldText color={colors.orange}>
                 Paid:{' '}
@@ -135,7 +162,7 @@ const NoOrderScreen = ({route}) => {
               bgColors={['green']}
             />
             <HSpacer />
-            <Row flexDirection="column">
+            <Row flexDirection="column" disabled>
               <Spacer height={3} />
               <BoldText fontSize={fontSize.md} color={colors.darkBlack}>
                 {route?.params?.params?.user?.name}
@@ -143,7 +170,7 @@ const NoOrderScreen = ({route}) => {
               <Spacer height={5} />
               <Row disabled={true}>
                 <StarRating />
-                <View style={{marginTop: 3}}>
+                <View style={{marginTop: hp(0.2)}}>
                   <RegularText color="black"> 0.0</RegularText>
                 </View>
               </Row>
@@ -153,7 +180,8 @@ const NoOrderScreen = ({route}) => {
           <SellerDetailCard>
             <Spacer />
             <SemiBoldText fontSize={fontSize.sm + 2} color="black">
-              {route?.params?.params?.user?.name} contact information
+              {RemoveLastName(route?.params?.params?.user?.name)} contact
+              information
             </SemiBoldText>
             <Spacer height={10} />
             <SemiBoldText color={colors.mainColor} fontSize={fontSize.lg - 2}>
@@ -188,7 +216,7 @@ const NoOrderScreen = ({route}) => {
             <SemiBoldText fontSize={fontSize.md} color={colors.darkBlack}>
               Dear {removeFirstName(value.name)},
             </SemiBoldText>
-            <Text style={styles.dark}>
+            <RegularText lineHeight={23} fontSize={14} color="#344054">
               Please feel free to get in touch with the seller promptly to
               arrange for item collection.{'\n'}
               {'\n'}We kindly advise you to personally inspect the item or guide
@@ -203,7 +231,7 @@ const NoOrderScreen = ({route}) => {
               refraining from initiating the pick-up.{'\n'}
               {'\n'}
               Thank you for your understanding and cooperation.
-            </Text>
+            </RegularText>
           </View>
           <Spacer />
           <PrimaryButton

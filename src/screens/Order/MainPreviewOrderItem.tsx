@@ -145,7 +145,7 @@ export default MainPreviewOrderItem;
 
 const styles = StyleSheet.create({
   container2: {
-    height: HP(53),
+    height: HP(65),
     width: WP(100),
     backgroundColor: 'white',
     borderRadius: 10,

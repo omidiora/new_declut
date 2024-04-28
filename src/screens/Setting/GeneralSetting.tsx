@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {
   BaseView,
@@ -7,39 +7,63 @@ import {
   Spacer,
   ViewContainer,
 } from '../../component/view';
-import {useTheme} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import {TopHeader} from '../../component/view/headers/topHeader';
 import {BoldText, MediumText, SemiBoldText, fontSize} from '../../utils/text';
 import ON from '../../assets/images/svg/ON.svg';
+import OF from '../../assets/images/svg/OFF.svg';
 import Arrow from '../../assets/images/right.svg';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {LineComponent} from '../Home/component';
 import StatesComponent from '../../component/ModalComponentForState/StatesComponent';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {SearchInput} from '../../component/view/input/Search';
-import { fontPixel, widthPixel } from '../../utils/theme/pxToDpConvert';
+import {fontPixel, widthPixel} from '../../utils/theme/pxToDpConvert';
+import {useDispatch} from 'react-redux';
+import {settingApi} from '../../../redux/product/api';
+import { hp } from '../../utils/general';
 
 const GeneralSetting = () => {
   const {colors} = useTheme();
   const [option, setOption] = useState({});
   const [isVisible, setisVisible] = useState(false);
+  const dispatch = useDispatch();
+  const [newCondition, setnewCondition] = useState(true);
+  const [oldCondition, setoldCondition] = useState(true);
+  const [currenLocation, setcurrenLocation] = useState(true);
+  const navigation = useNavigation();
 
+  const getProduct = () => {
+    let payload={
+      by_current_location:  1,
+      by_condition_new:  newCondition ?1:0,
+      by_condition_neatly_used: oldCondition ?1:0,
+      "other-location":option?.value,
+      navigation:navigation,
+      
+    }
+    dispatch(
+      settingApi(payload),
+     
+    );
+  };
   return (
     <BaseView backgroundColor={colors.bgColor}>
       <TopHeader
         title="Setting"
         rightComponent={true}
         rightText="Done"
-        onPress={() => {}}
+        onPress={() => getProduct()}
       />
 
-    
-     {isVisible &&  <StatesComponent
-        isVisible={isVisible}
-        option={option}
-        setOption={setOption}
-        setVisible={setisVisible}
-      />}
+      {isVisible && (
+        <StatesComponent
+          isVisible={isVisible}
+          option={option}
+          setOption={setOption}
+          setVisible={setisVisible}
+        />
+      )}
 
       <ViewContainer>
         <Spacer height={30} />
@@ -60,11 +84,14 @@ const GeneralSetting = () => {
 
           <Row disabled={false} onPress={() => setisVisible(true)}>
             {/* setisVisible */}
-            <BoldText color={colors.darkBlack} fontSize={fontSize.md}>
+            <View>
+            <MediumText marginTop={hp(0.34)} color={colors.secondaryBlack} fontSize={fontSize.md-2}>
               {option.value ?? 'Select'}
-            </BoldText>
+            </MediumText>
+            </View>
+
             <View style={{marginLeft: 3}}>
-              <MaterialIcons name="keyboard-arrow-right" size={20} />
+              <MaterialIcons name="keyboard-arrow-right" size={hp(3)} />
             </View>
           </Row>
         </Row>
@@ -77,21 +104,23 @@ const GeneralSetting = () => {
         </BoldText>
         <Spacer />
         <Row justifyContent="space-between" alignItems="center">
-          <View>
-            <SemiBoldText color={colors.darkBlack} fontSize={fontSize.sm + 2}>
-              New
-            </SemiBoldText>
-          </View>
-          <ON />
+          <SemiBoldText color={colors.darkBlack} fontSize={fontSize.sm + 2}>
+            New
+          </SemiBoldText>
+
+          <TouchableOpacity onPress={() => setnewCondition(!newCondition)}>
+            {newCondition ? <ON /> : <OF />}
+          </TouchableOpacity>
         </Row>
         <Spacer />
         <Row justifyContent="space-between" alignItems="center">
-          <View>
-            <SemiBoldText color={colors.darkBlack} fontSize={fontSize.sm + 2}>
-              Old
-            </SemiBoldText>
-          </View>
-          <ON />
+          <SemiBoldText color={colors.darkBlack} fontSize={fontSize.sm + 2}>
+            Old
+          </SemiBoldText>
+
+          <TouchableOpacity onPress={() => setoldCondition(!oldCondition)}>
+            {oldCondition ? <ON /> : <OF />}
+          </TouchableOpacity>
         </Row>
       </ViewContainer>
     </BaseView>

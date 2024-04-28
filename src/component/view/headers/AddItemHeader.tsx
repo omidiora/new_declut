@@ -95,10 +95,10 @@ export const AddItemHeader: React.FC<{
         </HeaderSideComponent>
       </HeaderContainer>
       <View style={{flexDirection: 'row' }}>
-        {borderBottom1 && <NewBorderContainer />}
+        {borderBottom1 && <NewBorderContainer  style={{marginLeft: -18,width:'28%'}}/>}
         {borderBottom2 && <NewBorderContainer style={{marginLeft: 80}} />}
         {borderBottom3 && <NewBorderContainer style={{marginLeft: 175}} />}
-        {borderBottom4 && <NewBorderContainer style={{marginLeft: 260}} />}
+        {borderBottom4 && <NewBorderContainer style={{marginLeft: 260,width:3000}} />}
       </View>
     </>
   );

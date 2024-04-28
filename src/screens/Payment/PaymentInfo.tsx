@@ -22,6 +22,9 @@ const PaymentInfo = props => {
   }, []);
 
 
+  console.log('====================================');
+  console.log(user, 'use11r');
+  console.log('====================================');
   return (
     <View style={{flex: 1}}>
       <Paystack
@@ -29,6 +32,7 @@ const PaymentInfo = props => {
         // amount={props?.route?.params?.item?.item_amount}
         amount={props?.route?.params?.item?.item_amount}
         billingEmail={user?.email}
+        billingName={user?.name}
         activityIndicatorColor="green"
         onCancel={e => {
           goBack();

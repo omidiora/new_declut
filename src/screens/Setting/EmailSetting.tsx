@@ -26,14 +26,14 @@ const EmailSetting = () => {
       id: 2,
       name: 'New messages',
     },
-    {
-      id: 3,
-      name: 'Interests',
-    },
-    {
-      id: 4,
-      name: 'Promotions',
-    },
+    // {
+    //   id: 3,
+    //   name: 'Interests',
+    // },
+    // {
+    //   id: 4,
+    //   name: 'Promotions',
+    // },
   ];
 
   const toggleItem = id => {
@@ -55,14 +55,15 @@ const EmailSetting = () => {
         <View style={{height: 210, marginTop: HP(-15)}}>
           <EmailInfo width={SIZES.width / 1.1} height={300} />
         </View>
-        <ScrollView>
+        <Spacer/>
+        <View>
           {Settings.map(item => (
             <View
               key={item.id}
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                marginTop: 20,
+                // marginTop: 10,
               }}>
               <Text style={styles.name}>{item.name}</Text>
               <TouchableOpacity
@@ -72,7 +73,7 @@ const EmailSetting = () => {
               </TouchableOpacity>
             </View>
           ))}
-        </ScrollView>
+        </View>
       </View>
     </View>
   );

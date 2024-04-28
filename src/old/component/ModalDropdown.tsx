@@ -31,6 +31,9 @@ const ModalDisplay = ({
   componentTitle,
   hideSearch,
   leftFunc,
+  focusToBold,
+  searchPlaceholder,
+  setAllItem,
 }) => {
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState([]);
@@ -39,6 +42,8 @@ const ModalDisplay = ({
     const filtered = data.filter(
       item => item.value.toLowerCase().includes(text.toLowerCase()), // Adjust 'name' to the property you want to search
     );
+
+    console.log('Filtered data:', filtered);
     setSearch(text);
     setFilteredData(filtered);
   };
@@ -46,7 +51,7 @@ const ModalDisplay = ({
   useFocusEffect(
     React.useCallback(() => {
       setFilteredData(data);
-    }, [filteredData, data]),
+    }, [data]),
   );
 
   return (
@@ -73,7 +78,9 @@ const ModalDisplay = ({
           <View style={{marginLeft: WP(10)}}>
             <SearchInput
               showSearchTitle={true}
-              placeholder={'Search Location'}
+              placeholder={
+                searchPlaceholder ? searchPlaceholder : 'Search Location'
+              }
               onChangeText={handleSearch}
             />
           </View>
@@ -87,6 +94,10 @@ const ModalDisplay = ({
                   setTitle(showLabel ? Item.label : Item.value);
                   setVisible(false);
                   onPress(Item.value);
+
+                  if (setAllItem) {
+                    setAllItem(Item);
+                  }
                 }}>
                 <Text style={styles.value}>
                   {showLabel ? Item.label : Item.value}
@@ -115,6 +126,9 @@ const ModalDropdown = ({
   loading1,
   visible,
   setVisible,
+  focusToBold,
+  searchPlaceholder,
+  setAllItem,
 }) => {
   const [title, setTitle] = useState('');
 
@@ -129,6 +143,8 @@ const ModalDropdown = ({
         showLabel={showLabel}
         componentTitle={componentTitle}
         hideSearch={hideSearch}
+        searchPlaceholder={searchPlaceholder}
+        setAllItem={setAllItem}
       />
       <Text
         style={{
@@ -141,6 +157,7 @@ const ModalDropdown = ({
           color: 'black',
           // right: 5,
           fontSize: fontSize.sm + 2,
+          paddingBottom: 7,
 
           // marginTop:-5
         }}>
@@ -149,14 +166,18 @@ const ModalDropdown = ({
       <TouchableOpacity
         style={[
           styles.dropdown,
-          backgroundColor && {backgroundColor: backgroundColor
-          },
-          error&&{borderColor:"red"}
+          backgroundColor && {backgroundColor: backgroundColor},
+          error && {borderColor: 'red'},
         ]}
         onPress={() => setVisible(true)}>
-        <View style={{marginTop:4}}> 
+        <View style={{marginTop: 4}}>
           {title == '' ? (
-            <Text style={[styles.text, {backgroundColor: backgroundColor}]}>
+            <Text
+              style={[
+                styles.text,
+                {backgroundColor: backgroundColor},
+                focusToBold && {opacity: 4},
+              ]}>
               {placeholder}
             </Text>
           ) : (
@@ -189,8 +210,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderWidth: 1,
     borderColor: '#E4E7EC',
-
-    
   },
   icon: {
     marginTop: 20,
@@ -199,7 +218,7 @@ const styles = StyleSheet.create({
   },
   value: {
     color: COLOR.black,
-    marginLeft: WP(8),
+    marginLeft: WP(5),
     marginTop: HP(2),
     fontFamily: FontFamily.bold,
     marginVertical: 10,
@@ -217,6 +236,7 @@ const styles = StyleSheet.create({
     fontFamily: font.semiBold,
     fontSize: RFFontSize.sm,
     opacity: 0.45,
+    paddingBottom: 7,
   },
   text2: {
     color: COLOR.black,
@@ -225,5 +245,6 @@ const styles = StyleSheet.create({
     zIndex: 500,
     textAlign: 'center',
     fontSize: WP(3),
+    paddingBottom: 7,
   },
 });

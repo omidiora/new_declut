@@ -25,7 +25,13 @@ import FastImage from 'react-native-fast-image';
 import {Image} from 'react-native';
 import {NAIRA_SYSMBOL, hp, wp} from '../../utils/general';
 import {SIZES} from '../../utils/theme/theme';
-import {BoldText, MediumText, RegularText, SemiBoldText, fontSize} from '../../utils/text';
+import {
+  BoldText,
+  MediumText,
+  RegularText,
+  SemiBoldText,
+  fontSize,
+} from '../../utils/text';
 import Location from '../../assets/images/location.svg';
 import {LineComponent} from '../Home/component';
 import {SecondaryButton} from '../../component/view/button';
@@ -35,8 +41,8 @@ import uuid from 'react-native-uuid';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ArrowIcon from '../../assets/images/arrow.svg';
 import {font} from '../../utils/theme/fonts';
-import ArrowBack from '../../assets/images/whiteBackIcon.svg'
-
+import ArrowBack from '../../assets/images/black_arrow_icon.svg';
+import VideoPlayer from 'react-native-video';
 const LocationContainer = styled.View({
   flexDirection: 'row',
 });
@@ -53,13 +59,14 @@ const DetailContainer = styled.View({
 
 const ShowInterestButton = styled.TouchableOpacity({
   borderWidth: 1,
-  paddingTop: 20,
-  width: SIZES.width / 1.8,
+  paddingTop: hp(2),
+  width: SIZES.width / 2,
   borderRadius: 30,
   borderColor: '#02A89E',
   backgroundColor: '#02A89E',
   marginTop: SIZES.height / 30,
-  height: 55,
+  height: hp(6.5),
+  // paddingBottom:20
 });
 
 const RowItemContainer = styled.View<{width: string}>(({width}) => ({
@@ -155,8 +162,28 @@ const PreviewItem = () => {
     </View>
   );
 
+  console.log('====================================');
+  console.log(route?.params?.item);
+  console.log('====================================');
   return (
     <BaseView backgroundColor="#F9FAFB">
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{
+          position: 'absolute',
+          top: 30,
+          left: 20,
+          zIndex: 100,
+          backgroundColor: 'white',
+          borderRadius: 40,
+          padding: 2,
+          width: 40,
+          height: 40,
+        }}>
+        <View style={{alignSelf: 'center', marginTop: 11}}>
+          <ArrowBack tintColor={'black'} />
+        </View>
+      </TouchableOpacity>
       <ScrollView
         contentContainerStyle={{paddingBottom: 120}}
         showsVerticalScrollIndicator={false}>
@@ -209,13 +236,6 @@ const PreviewItem = () => {
         />
         <PaginationDots />
 
-        <TouchableOpacity onPress={()=>navigation.goBack()} style={{position:'absolute',top:30,left:20, zIndex:100}}>
-          <ArrowBack/>
-        </TouchableOpacity>
-
-
-
-
         <View style={{flex: 2, marginTop: SIZES.height / 9}}>
           <ViewContainer>
             <DetailContainer>
@@ -229,12 +249,16 @@ const PreviewItem = () => {
 
               <Spacer height={5} />
               <LocationContainer>
-                <LocationIcon />
+                <View style={{marginTop: hp(0.12)}}>
+                  <LocationIcon height={hp(2)} />
+                </View>
                 <HSpacer width={5} />
                 <SemiBoldText
                   color={colors.mediumGrey}
                   fontSize={fontSize.sm + 2}>
-                  {route?.params?.item?.area + ' ' + route?.params?.item?.state}
+                  {route?.params?.item?.area +
+                    ', ' +
+                    route?.params?.item?.state}
                 </SemiBoldText>
               </LocationContainer>
               <Spacer height={20} />
@@ -253,40 +277,38 @@ const PreviewItem = () => {
                 </RegularText>
               </View>
 
-              <Spacer height={30}/>
+              <Spacer height={30} />
               <RowItemContainer width={90}>
                 <BoldText
                   color={colors.secondaryBlack}
                   fontSize={fontSize.sm + 2}>
                   Brand:
                 </BoldText>
-                <BoldText
-                  color={"#344054"}
-                  fontSize={fontSize.sm + 2}>
-                  NA
+                <HSpacer width={6} />
+                <BoldText color={'#344054'} fontSize={fontSize.sm + 2}>
+                  {route?.params?.item?.brand}
                 </BoldText>
               </RowItemContainer>
-              <Spacer height={30}/>
-              <RowItemContainer width={170}>
+              <Spacer height={30} />
+              <RowItemContainer width={wp(35)}>
                 <SemiBoldText
                   color={colors.darkBlack}
                   fontSize={fontSize.sm + 2}>
                   Item Condition:
                 </SemiBoldText>
-                <SemiBoldText
-                  color={"#344054"}
-                  fontSize={fontSize.sm + 2}>
+                <HSpacer width={7} />
+                <SemiBoldText color={'#344054'} fontSize={fontSize.sm + 2}>
                   {route?.params?.item?.item_condition}
                 </SemiBoldText>
               </RowItemContainer>
-              <Spacer height={30}/>
+              <Spacer height={30} />
               <RowItemContainer width={90}>
                 <SemiBoldText
-                color={colors.darkBlack}
+                  color={colors.darkBlack}
                   fontSize={fontSize.sm + 2}>
                   Defect:
                 </SemiBoldText>
-
+                <HSpacer width={6} />
                 {/* check if it null */}
                 {route?.params?.item?.defect_reason == 'null' && (
                   <SemiBoldText
@@ -308,7 +330,6 @@ const PreviewItem = () => {
             <Spacer />
             <NoteContainer>
               <RegularText lineHeight={23} fontSize={14} color="#344054">
-                {'\n'}
                 Please note that we will never initiate the first contact with
                 you to ensure your safety from potential scammers. {'\n'}
                 {'\n'}
@@ -345,7 +366,7 @@ const PreviewItem = () => {
       </ScrollView>
       <View
         style={{
-          flex: 2,
+          flex: 1.5,
           backgroundColor: 'white',
           height: 10,
           borderTopWidth: 1,
@@ -355,12 +376,12 @@ const PreviewItem = () => {
           shadowOpacity: 0.5,
           shadowRadius: 2,
           elevation: 2,
-          marginTop: -150,
+          marginTop: hp(-20),
         }}>
         <ViewContainer>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <View>
-              <Spacer height={50} />
+              <Spacer height={40} />
               <SemiBoldText fontSize={fontSize.sm} color="#667085">
                 {'Total Price'}
               </SemiBoldText>
@@ -384,7 +405,7 @@ const PreviewItem = () => {
                       fontSize={fontSize.sm + 2}>
                       Show Interest
                     </SemiBoldText>
-                    <View style={{marginTop: 2, left: 5}}>
+                    <View style={{marginTop: hp(0.5), left: 5}}>
                       <ArrowIcon />
                     </View>
                   </>

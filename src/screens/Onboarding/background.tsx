@@ -13,6 +13,7 @@ import {hp, wp} from '../../utils/general';
 import {ViewContainer, Spacer} from '../../component/view';
 import {BoldText, MediumText, TextSizes, lineHeight} from '../../utils/text';
 import {SIZES} from '../../utils/theme/theme';
+import { HP } from '../../old/Util/Util';
 
 const {width, height} = Dimensions.get('window');
 
@@ -61,7 +62,7 @@ const SubText = styled(MediumText)(
   {
     textAlign: 'center',
     width: wp(90),
-    fontSize: TextSizes.md,
+    fontSize: TextSizes.md-2,
     lineHeight: lineHeight.lg,
   },
   props => ({
@@ -88,11 +89,17 @@ const IndicatorWrapper = styled.View({
   justifyContent: 'center',
   alignItems: 'center',
   flexDirection: 'row',
+  marginTop:HP(-51)
+  // position:'absolute',
+
+  // left:30,
+  // bottom:215
+  // marginTop:7
 });
 
 const Indicator = styled.View<{active: boolean}>(
   {
-    height: widthPixel(10),
+    height: widthPixel(9),
     borderRadius: widthPixel(50),
     marginHorizontal: widthPixel(4),
   },
@@ -169,9 +176,12 @@ const Background: React.FC = () => {
         resizeMethod="resize"
         // source={item.image}
       />
-      <View style={{marginTop: SIZES.height / -8}}>
+       
+      <View style={{marginTop: SIZES.height / -13}}>
+      <Spacer height={16}/>
         <Header color={colors.primaryBlack}>{item.title}</Header>
-        <SubText color={colors.lightBlack}>{item.subTitle}</SubText>
+        <Spacer height={12}/>
+        <SubText color={colors.secondaryBlack}>{item.subTitle}</SubText>
       </View>
     </Page>
   );

@@ -26,12 +26,14 @@ import {
   WP,
   currencyFormatter,
 } from '../../../old/Util/Util';
-import { SIZES } from '../../../utils/theme/theme';
+import {SIZES} from '../../../utils/theme/theme';
 import HeaderComponent from '../../../old/component/HeaderComponent';
 import OverlayPreloader from '../../../component/view/OverlayPreloader';
-import { upCreateProductApi } from '../../../../redux/product/api';
-import { useAppSelector ,useAppDispatch} from '../../../../redux/hook';
-import { SemiBoldText, fontSize } from '../../../utils/text';
+import {upCreateProductApi} from '../../../../redux/product/api';
+import {useAppSelector, useAppDispatch} from '../../../../redux/hook';
+import {SemiBoldText, fontSize} from '../../../utils/text';
+import AddItemCardInfo from '../../../component/AddItemCardInfo';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const UploadAllItem = () => {
   const [data, setData] = useState([]);
@@ -103,7 +105,7 @@ const UploadAllItem = () => {
             source={{
               uri: item?.path,
             }}
-            style={{width: '100%', height: 200}}
+            style={{width: '100%', height: 350}}
             resizeMode="cover"
           />
         </View>
@@ -119,7 +121,6 @@ const UploadAllItem = () => {
           <VideoPlayer
             disableFocus={true}
             muted={false}
-            
             // key={item?.media?.id}
             source={{
               uri: item?.path,
@@ -165,7 +166,7 @@ const UploadAllItem = () => {
   console.log(item?.condition, '11jbjbb1j');
 
   return (
-    <View style={{flex: 1, backgroundColor: COLOR.white}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: COLOR.white}}>
       {visible && <OverlayPreloader />}
 
       {/* <PreviewModal
@@ -185,8 +186,13 @@ const UploadAllItem = () => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{paddingBottom: HP(10)}}>
-          <View style={{marginTop: -20}}>
-            <Note width={WP(100)} height={180} />
+          <View style={{marginTop: 20,height:145}}>
+            <AddItemCardInfo
+              text={
+                'Before proceeding, kindly review all your provided information for accuracy and completeness. Double-check to ensure everything is correct. Your satisfaction is our priority!'
+              }
+            />
+            {/* <Note width={WP(100)} height={180} /> */}
           </View>
 
           <View style={{marginTop: -70}}>
@@ -270,14 +276,14 @@ const UploadAllItem = () => {
             paddingBottom: 10,
           }}>
           <View>
-            <Upload  height={30} width={30}/>
+            <Upload height={30} width={30} />
           </View>
-          <SemiBoldText color='white' fontSize={fontSize.md} marginTop={5}>
+          <SemiBoldText color="white" fontSize={fontSize.md} marginTop={5}>
             Upload
           </SemiBoldText>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

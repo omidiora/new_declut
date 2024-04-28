@@ -75,6 +75,6 @@ export const EditProfile = yup.object().shape({
 });
 
 export const BankSchema = yup.object().shape({
-  account_number: yup.string().required('Enter you bank account number'),
+  // account_number: yup.string().required('Enter you bank account number'),
   bank_name: yup.string().required(' Select a bank number.'),
 });

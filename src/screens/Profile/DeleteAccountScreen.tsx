@@ -94,7 +94,8 @@ const DeleteAccountScreen = () => {
             Please let us know the reason you are leaving
           </BoldText>
           <Spacer height={15} />
-          <RegularText fontSize={fontSize.sm + 2} color={colors.secondaryBlack}>
+          <RegularText fontSize={fontSize.sm + 2} 
+         color={colors.secondaryBlack}>
             Are you sure you want to delete your account?
           </RegularText>
           <Spacer height={35} />
@@ -113,7 +114,7 @@ const DeleteAccountScreen = () => {
                 ]}>
                 <RegularText
                   color={colors.secondaryBlack}
-                  fontSize={fontSize.sm + 2}>
+                  fontSize={fontSize.sm }>
                   {item.name}
                 </RegularText>
                 {selectedId == item.id && (
@@ -169,7 +170,7 @@ export default DeleteAccountScreen;
 const styles = StyleSheet.create({
   row: {
     backgroundColor: '#F7FEFE',
-    padding: 15,
+    padding: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

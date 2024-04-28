@@ -144,6 +144,7 @@ const AddItem2 = () => {
               <View style={{width: WP(90), marginTop: 20}}>
                 <ModalDropdown
                   showLabel={true}
+                  searchPlaceholder="Search Category"
                   data={data}
                   placeholder={'Select Category*'}
                   headerTitle={'Select Category *'}
@@ -162,7 +163,6 @@ const AddItem2 = () => {
 
               <View style={styles.FormInput}>
                 <Input
-                  keyboardType="numeric"
                   label="brand *"
                   inputContainerStyle={[
                     InputContainerStyle2,
@@ -203,7 +203,7 @@ const AddItem2 = () => {
                 />
               </View>
 
-              <Spacer height={350}/>
+              <Spacer height={10}/>
               <View>
                 <PrimaryButton
                   text="Next"

@@ -20,6 +20,13 @@ import {PrimaryButton} from '../../component/view/button';
 import {useAsyncStorage} from '@react-native-async-storage/async-storage';
 import {EmailandPhoneSchema, NameValidtion} from './validation';
 import Eclipese from '../../assets/images/ellipses2.svg';
+import {
+  InputContainerStyle,
+  InputContainerStyle2,
+  errorStyle,
+  labelStyle,
+} from './styling';
+import SmallDeclut from '../../assets/images/smallBg.svg';
 
 const DeclutContainer = styled.View({
   alignItems: 'center',
@@ -67,19 +74,20 @@ const Register2 = () => {
     });
   };
 
-  console.log(errors,'error');
-  
-  return (
-    <BaseView backgroundColor={colors.bgColor}>
-      <>
-        <TopHeader
-          title={'Create account'}
-          // borderBottom
-          rightComponent={true}
-          rightText='Sign in'
+  console.log(isFocused, 'error');
 
-          onPress={() => navigate('login')}
-        />
+  return (
+    <BaseView backgroundColor={colors.bgColor} focusBarStyle={'dark-content'}>
+      <>
+        <View>
+          <TopHeader
+            title={'Create account'}
+            // borderBottom
+            rightComponent={true}
+            rightText="Sign in"
+            onPress={() => navigate('login')}
+          />
+        </View>
 
         <Spacer height={80} />
         <ViewContainer paddingHorizontal={21}>
@@ -87,8 +95,9 @@ const Register2 = () => {
             <Row
               alignItems="center"
               flexDirection={isFocused || isFocused2 ? 'row' : 'column'}
-              style={{right: isFocused || isFocused2 ? 25 : 0}}>
-              <Declut />
+              style={{right: isFocused || isFocused2 ? 35 : 0}}>
+              {/* */}
+              {isFocused || isFocused2 ? <SmallDeclut /> : <Declut />}
 
               <Spacer height={30} />
               <HSpacer width={10} />
@@ -111,17 +120,19 @@ const Register2 = () => {
           <Input
             label="Email *"
             inputContainerStyle={[
-              styles.inputContainerStyle,
-              isFocused && {
-                borderColor: colors.mainColor,
-                borderWidth: 1,
-                borderBottomWidth: 1,
-              },
+              InputContainerStyle2,
+
               values.email && {
                 backgroundColor: 'white',
                 borderColor: colors.lightGrey,
                 borderWidth: 1,
               },
+              isFocused && {
+                borderColor: colors.mainColor,
+                borderWidth: 1,
+                borderBottomWidth: 1,
+              },
+              errors.email && errorStyle,
             ]}
             inputStyle={{
               lineHeight: RFFontSize.sm + 0.5,
@@ -131,11 +142,12 @@ const Register2 = () => {
             // leftIcon={<Sms />}
             placeholder="Email"
             labelStyle={[
-              styles.labelStyle,
+              labelStyle,
               isFocused && {color: colors.mainColor},
               values.email && {
                 color: 'black',
               },
+              errors.email && {color: 'red'},
             ]}
             onChangeText={handleChange('email')}
             onFocus={() => setIsFocused(true)}
@@ -144,39 +156,39 @@ const Register2 = () => {
             //   errorMessage='adlmladnn'
           />
 
+          {errors.phone_number && <Spacer height={16} />}
           <Input
             label="Phone Number *"
+            keyboardType="numeric"
             inputContainerStyle={[
               styles.inputContainerStyle,
-              isFocused2 && {
-                borderColor: colors.mainColor,
-                borderWidth: 1,
-                borderBottomWidth: 1,
-              },
+
               values.phone_number && {
                 backgroundColor: 'white',
                 borderColor: colors.lightGrey,
                 borderWidth: 1,
               },
+              isFocused2 && {
+                borderColor: colors.mainColor,
+                borderWidth: 1,
+                borderBottomWidth: 1,
+              },
             ]}
             inputStyle={{
-              lineHeight: RFFontSize.sm + 0.5,
+              lineHeight: RFFontSize.sm + 2,
               fontFamily: font.semiBold,
               fontSize: RFFontSize.sm,
             }}
             // leftIcon={<Sms />}
-            placeholder="0000 000 0000"
-            labelStyle={[
-              styles.labelStyle,
-              isFocused2 && {color: colors.mainColor},
-            ]}
+            placeholder="090 000 00000"
+            labelStyle={[labelStyle, isFocused2 && {color: colors.mainColor}]}
             onChangeText={handleChange('phone_number')}
             onFocus={() => setIsFocused2(true)}
             onBlur={() => setIsFocused2(false)}
-            errorMessage={errors.phone}
+            errorMessage={errors.phone_number}
             //   errorMessage='adlmladnn'
           />
-          <Spacer height={100} />
+          {/* <Spacer height={80} /> */}
 
           <PrimaryButton
             text="Continue"

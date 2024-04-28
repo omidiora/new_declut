@@ -5,10 +5,10 @@ import axios from 'axios';
 import {SERVER_URL} from '../../src/utils/network/url';
 import axiosInstance from '../../src/utils/network/axiosInterceptors';
 import {AlertNofity, AlertNofityError} from '../../src/utils/notify';
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 
 const ProfileApi = createSlice({
-  name: 'productApi',
+  name: 'profileApi',
   initialState: {
     data: null,
     loading: false,
@@ -38,6 +38,10 @@ const ProfileApi = createSlice({
     deleteAccountFailure(state, action) {
       state.loading = false;
     },
+
+    // uploadUserPicture(state, action) {
+    //   state.data = [];
+    // },
   },
 });
 
@@ -64,7 +68,8 @@ export const {
 //   };
 
 export const editProfileApi = payload => async dispatch => {
-  console.log(payload, 'payload');
+  console.log(payload, 'payloadadafdafkdkandkfknadkfnkadsnkfnkadnfk');
+  ;
   try {
     dispatch(editProfileStart());
     await axiosInstance({
@@ -73,15 +78,18 @@ export const editProfileApi = payload => async dispatch => {
       data: payload,
     })
       .then(response => {
-        console.log(response.data, 'respone');
+        console.log(response, 'respone from edit profile');
+
         dispatch(editProfileSuccess(response.data));
+        payload.navigation.goBack();
+        payload.setItem(JSON.stringify(response.data?.data));
         AlertNofity(
           'Success',
           response?.data?.message ?? 'Profile updated successfully',
         );
       })
       .catch(error => {
-        console.log(error.data, 'error');
+        console.log(error, 'error from edit profile');
         dispatch(editProfileFailure(error));
         AlertNofityError('Error', error?.data?.message);
       });
@@ -101,7 +109,8 @@ export const deleteAccountApi = (payload, navigation) => async dispatch => {
       .then(response => {
         console.log(response.data, 'respone');
         dispatch(deleteAccountSuccess());
-        Alert.alert("Account Deleted", "Your Declut account was deleted.");
+        Alert.alert('Account Deleted', 'Your Declut account was deleted.');
+        payload.navigation('Auth');
       })
       .catch(error => {
         console.log(error.data, 'error');

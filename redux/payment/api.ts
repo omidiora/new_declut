@@ -4,7 +4,8 @@ import {upLoadFileApiPayload} from '../interface';
 import axios from 'axios';
 import axiosInstance from '../../src/utils/network/axiosInterceptors';
 import {AlertNofityError, AlertNofity} from '../../src/utils/notify';
-import { SERVER_URL } from '../../src/utils/network/url';
+import {SERVER_URL} from '../../src/utils/network/url';
+import {useAsyncStorage} from '@react-native-async-storage/async-storage';
 
 const paymentApi = createSlice({
   name: 'paymentApi',
@@ -22,6 +23,7 @@ const paymentApi = createSlice({
     bankLoading: true,
     userBankDetail: {},
     userBankDetailLoading: false,
+    storeBankLoading: false,
   },
   reducers: {
     orderPayment(state) {
@@ -81,13 +83,33 @@ const paymentApi = createSlice({
       state.userBankDetailLoading = false;
       state.userBankDetail = action.payload;
     }, // userBankDetail
+    userBankDetailFailure(state, action) {
+      state.userBankDetailLoading = false;
+    },
     loadingStop(state, action) {
       state.loading = false;
     },
+
+    storeBankLoading(state, action) {
+      state.storeBankLoading = true;
+    },
+
+    storeBankSuccess(state, action) {
+      state.storeBankLoading = false;
+    }, // storeBank
+    storeBankFailure(state, action) {
+      state.storeBankLoading = false;
+    },
   },
+
+  // storeBankLoading
 });
 
 export const {
+  storeBankLoading,
+  storeBankSuccess,
+  storeBankFailure,
+
   orderPayment,
   orderPaymentSuccess,
   orderPaymentFailure,
@@ -99,6 +121,7 @@ export const {
   listBankFailure,
   userBankDetailSuccess,
   userBankDetailLoading,
+  userBankDetailFailure,
   loadingStop,
 } = paymentApi.actions;
 
@@ -107,7 +130,7 @@ export const orderPaymentApi = payload => async dispatch => {
   payload.setloading(true);
 
   console.log('====================================');
-  console.log(payload, 'dad`1111');
+  console.log(payload, 'payload from orderPamyment api');
   console.log('====================================');
   try {
     await axiosInstance({
@@ -136,7 +159,7 @@ export const orderPaymentApi = payload => async dispatch => {
         payload.setloading(false);
       })
       .catch(error => {
-        console.log(error,'error from order payment')
+        console.log(error, 'error from order payment');
         payload.setloading(false);
         AlertNofityError('Order', error?.data?.message);
         dispatch(orderPaymentFailure(error));
@@ -187,6 +210,10 @@ export const confirmPayment = (payload, navigation) => async dispatch => {
 export const confirmPickUp =
   (payload, navigation, setModalVisible, setModalVisible2, setLoading) =>
   async dispatch => {
+
+    console.log('====================================');
+    console.log(payload ,'payload from confirm pick up');
+    console.log('====================================');
     try {
       setLoading(true);
       // {{host}}/payment/payout?complete_order=1&item_id=3&seller_id=1&reference=9c0bd123-09ff-4e15-a17f-2bd7448e74c3
@@ -196,7 +223,10 @@ export const confirmPickUp =
         method: 'POST',
       })
         .then(response => {
-          console.log(response, 'response from confirm  pickup');
+          console.log(response?.data, 'response from confirm  pickup');
+          console.log(response?.data?.data, 'response from confirm  pickup');
+          console.log(response.data.message,'resonse from pick message');
+          
           if (
             response?.data?.status == 'Success' ||
             response?.data?.code == 200
@@ -235,10 +265,10 @@ export const confirmPickUp =
   };
 
 export const rejectPickUp =
-  (payload, navigation, setModalVisible, setModalVisible2 ,setLoading) =>
+  (payload, navigation, setModalVisible, setModalVisible2, setLoading) =>
   async dispatch => {
     try {
-      setLoading(true)
+      setLoading(true);
       // {{host}}/payment/payout?complete_order=1&item_id=3&seller_id=1&reference=9c0bd123-09ff-4e15-a17f-2bd7448e74c3
       dispatch(confirmPaymentLoading());
       await axiosInstance({
@@ -246,12 +276,13 @@ export const rejectPickUp =
         method: 'POST',
       })
         .then(response => {
-          console.log(response?.status,'response')
+          console.log(response?.status, 'response');
           AlertNofity('Order', 'Item rejected successfully.');
           console.log(response?.data, 'response from confirm  pickup');
           if (
             response?.data?.status == 'Success' ||
-            response?.data?.code == 200 || response?.status==200
+            response?.data?.code == 200 ||
+            response?.status == 200
           ) {
             dispatch(orderPaymentSuccess(response));
             setModalVisible(false);
@@ -324,8 +355,9 @@ export const veriyBankDetail = (payload, navigation) => async dispatch => {
         return response.data;
       })
       .catch(error => {
-        // console.log(error, 'reer');
-        AlertNofityError('Error', 'Something Went Wrong!!');
+        console.log(error, 'reer');
+        dispatch(userBankDetailFailure());
+        AlertNofityError('Error', 'Incorrect Detail. Kindly check again!!');
 
         // navigation.goBack('BottomTabNavigation');
       });
@@ -354,6 +386,38 @@ export const createBankDetail = (payload, navigation) => async dispatch => {
       });
   } catch (error) {}
 };
+// /payment/store-account
+
+export const storeBankDetailApi =
+  (payload, navigation, setItem) => async dispatch => {
+    // console.log(payload, 'aldmlam');
+
+    dispatch(storeBankLoading());
+    // storeBankLoading,
+
+    try {
+      // {{host}}/payment/payout?complete_order=1&item_id=3&seller_id=1&reference=9c0bd123-09ff-4e15-a17f-2bd7448e74c3
+      await axiosInstance({
+        url: `${SERVER_URL}/payment/store-account`,
+        method: 'post',
+        data: payload,
+      })
+        .then(response => {
+          AlertNofity('Success', 'Information saved successfully');
+          dispatch(storeBankSuccess());
+          navigation.goBack();
+          setItem(JSON.stringify("true"));
+
+          return response.data;
+        })
+        .catch(error => {
+          console.log(error, 'reer');
+          AlertNofityError('Error', 'Something Went Wrong!!');
+          dispatch(storeBankFailure());
+          // navigation.goBack('BottomTabNavigation');
+        });
+    } catch (error) {}
+  };
 
 export const ReportUserApi = (payload, navigation) => async dispatch => {
   dispatch(orderPayment());

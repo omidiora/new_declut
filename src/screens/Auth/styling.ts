@@ -43,6 +43,8 @@ export const labelStyle = {
   color: 'black',
   right: 5,
   fontSize: fontSize.sm + 2,
+  paddingBottom:8,
+  
 };
 
 export const ErrorColor = {

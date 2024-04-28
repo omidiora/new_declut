@@ -6,14 +6,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import ViewContainer from '../../../component/ViewContainer';
-import HeaderComponent from '../../../component/HeaderComponent';
 import EmailInfo from '../../../assets/images/svg/emailsetting.svg';
-import {COLOR, FontFamily, HP, WP} from '../../../Util/Util';
 import ON from '../../../assets/images/svg/ON.svg';
 import OF from '../../../assets/images/svg/OFF.svg';
 import Push from '../../../assets/images/svg/push.svg';
-import {SIZES} from '../../../Util/theme';
+import { TopHeader } from '../../../component/view/headers/topHeader';
+import { FontFamily ,COLOR,  HP, WP} from '../../../old/Util/Util';
+import { SIZES } from '../../../utils/theme/theme';
 
 const PushNotificationSetting = () => {
   const [selectedIds, setSelectedIds] = useState([]);
@@ -51,9 +50,9 @@ const PushNotificationSetting = () => {
 
   return (
     <View style={{flex: 1, backgroundColor: COLOR.white}}>
-      <View style={{paddingLeft: SIZES.width / 17}}>
-        <HeaderComponent
-          title="Push notifications"
+      <View >
+        <TopHeader
+          title="Notifications"
           rightComponent={true}
           rightText={' '}
         />

@@ -34,7 +34,7 @@ export const BaseView: React.FC<BaseViewProps> = ({
             backgroundColor={backgroundColor}
         >
             <FocusAwareStatusBar
-                backgroundColor={Platform.OS === 'ios' ? colors.card : undefined}
+                backgroundColor={Platform.OS === 'ios' ? '#F9FAFB' : '#F9FAFB'}
                 // translucent={true}
                 barStyle={barStyle}
             />

@@ -16,7 +16,7 @@ const OnboardingScreen = () => {
   const { navigate } = useNavigation();
 
   return (
-    <BaseView backgroundColor={'white'}>
+    <BaseView backgroundColor={'#F9FAFB'} focusBarStyle={"dark-content"}>
       <Background />
       <Spacer height={50} />
       <BottomContainer>

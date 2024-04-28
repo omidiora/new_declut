@@ -13,17 +13,26 @@ import {
 import {BoldText, RegularText, SemiBoldText, fontSize} from '../../utils/text';
 import {useNavigation, useTheme} from '@react-navigation/native';
 import {useAppDispatch, useAppSelector} from '../../../redux/hook';
-import {orderHistoryPendingApi} from '../../../redux/product/api';
+import {
+  orderHistoryApi,
+  orderHistoryPendingApi,
+} from '../../../redux/product/api';
 import moment from 'moment';
 import {color} from '@rneui/base';
+import EmptyImage from '../../assets/images/empty.svg';
+
 
 const PendingScreen = () => {
   const {colors} = useTheme();
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const {data, loading, error, orderHistoryPendingArray} = useAppSelector(
+  const {data, loading, error, orderHistory} = useAppSelector(
     state => state.product,
   );
+
+  React.useEffect(() => {
+    dispatch(orderHistoryApi('completed'));
+  }, []);
 
   React.useEffect(() => {
     dispatch(orderHistoryPendingApi('pending'));
@@ -34,7 +43,7 @@ const PendingScreen = () => {
         <Spacer height={30} />
         <FlatList
           // contentContainerStyle={{paddingTop:10}}
-          data={orderHistoryPendingArray?.data?.data}
+          data={orderHistory?.data?.data}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           renderItem={({item}) => (
@@ -106,7 +115,19 @@ const PendingScreen = () => {
               </>
             )
           )}
-          ListEmptyComponent={() => <></>}
+          ListEmptyComponent={() => (
+            <>
+              <View style={{alignSelf: 'center'}}>
+                <EmptyImage height={350} />
+                <SemiBoldText
+                  fontSize={14}
+                  textAlign="center"
+                  color={colors.secondaryBlack}>
+                  You have no completed order!!!
+                </SemiBoldText>
+              </View>
+            </>
+          )}
         />
       </ViewContainer>
     </BaseView>

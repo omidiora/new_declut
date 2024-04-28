@@ -12,7 +12,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getAllState} from '../../../redux/location/api';
 import {SemiBoldText} from '../../utils/text';
 import {colors} from 'react-native-elements';
-import {useTheme} from '@react-navigation/native';
+import {useFocusEffect, useTheme} from '@react-navigation/native';
 import {hp, wp} from '../../utils/general';
 import {TopHeader} from '../view/headers/topHeader';
 import {SearchInput} from '../view/input/Search';
@@ -29,7 +29,7 @@ const ModalContainer = styled.View({
 
 const SearchInputContainer = styled.View({
   width: '90%',
-  alignSelf:'center'
+  alignSelf: 'center',
 });
 const StatesComponent = ({option, setOption, isVisible, setVisible}) => {
   const dispatch = useDispatch();
@@ -41,19 +41,35 @@ const StatesComponent = ({option, setOption, isVisible, setVisible}) => {
     dispatch(getAllState());
   }, []);
 
+  const [filteredData, setFilteredData] = useState([]);
+
+  const handleSearch = text => {
+    const filtered = StateOfNigeria.filter(
+      item => item.value.toLowerCase().includes(text.toLowerCase()), // Adjust 'name' to the property you want to search
+    );
+
+    setSearch(text);
+    setFilteredData(filtered);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setFilteredData(StateOfNigeria);
+    }, [StateOfNigeria]),
+  );
   return (
     <ReactNativeModal isVisible={isVisible} style={{backgroundColor: 'white'}}>
       <ModalContainer>
         <TopHeader
           title="Location"
           rightComponent={true}
-          rightText="Done"
-          onPress={() => {}}
+          rightText=""
+          onPress={() => setVisible(false)}
         />
 
         <SearchInputContainer>
           <SearchInput
-            placeholder="What are you looking for"
+            placeholder="What are you looking for?"
             // value={search}
             // autoFocus={true}
             containerStyle={{
@@ -65,12 +81,11 @@ const StatesComponent = ({option, setOption, isVisible, setVisible}) => {
               // padding:10
               // height:100
             }}
-            onSubmitEditing={() => {
-              // SearchForItem();
-              // saveKeyword();
-            }}
+            // onSubmitEditing={() => {
+            //   searchItems();
+            // }}
             clearButtonMode="while-editing"
-            onChangeText={text => setSearch(text)}
+            onChangeText={handleSearch}
             leftIcon={
               <Ionicons
                 name="search-outline"
@@ -90,7 +105,7 @@ const StatesComponent = ({option, setOption, isVisible, setVisible}) => {
             paddingTop: 12,
             zIndex: 120,
           }}>
-          {StateOfNigeria.map((item, index) => (
+          {filteredData.map((item, index) => (
             <TouchableOpacity
               key={index}
               style={styles.states}

@@ -49,9 +49,10 @@ const FinalDeleteAccountScreen = props => {
   const loading = useSelector(state => state?.profile?.loading);
 
   const deleteAccApi = item => {
-    dispatch(
+    dispatch( 
       deleteAccountApi({
         reason: props?.route.params,
+        navigation:navigate
       }),
     );
   };
@@ -71,19 +72,20 @@ const FinalDeleteAccountScreen = props => {
           <BoldText
             fontSize={fontSize.md}
             textAlign="center"
+            lineHeight={20}
             color={colors.darkBlack}>
             Are you sure you want to delete your account?
           </BoldText>
           <Spacer height={40} />
-          <RegularText fontSize={fontSize.sm} color={colors.secondaryBlack}>
+          <RegularText fontSize={fontSize.sm} 
+         lineHeight={18} 
+          color={colors.secondaryBlack}>
             If you delete your account, you will permanently lose your profile,
             messages, history, and photos. If you delete your account, this
             action cannot be undone .
           </RegularText>
           <Spacer height={15} />
-          <RegularText fontSize={fontSize.sm} color={colors.secondaryBlack}>
-            Are you sure you want to delete your account?
-          </RegularText>
+         
 
           <Spacer height={500} />
           {loading ? (

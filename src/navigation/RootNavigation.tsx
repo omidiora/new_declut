@@ -19,6 +19,8 @@ import UploadAllItem from '../screens/Product/component/UploadAllItem';
 import AddItem1 from '../screens/Product/component/AddItem1';
 import ReportScreen from '../screens/Report/ReportScreen';
 import RatingScreen from '../screens/Order/RatingScreen';
+import LicenseScreen from '../screens/Licenses/LicenseScreen';
+import HelpDesk from '../screens/Help/HelpDesk';
 
 const RootNavigation = () => {
   const Stack = createNativeStackNavigator();
@@ -27,16 +29,14 @@ const RootNavigation = () => {
   return (
     <>
       <Stack.Navigator>
-        {/*  */}
-
-        {/* <Stack.Screen
+        <Stack.Screen
           options={{
             headerShown: false,
           }}
           name="Onboarding"
           component={OnboardingScreen}
         />
-
+        
 
         <Stack.Screen
           options={{
@@ -44,7 +44,8 @@ const RootNavigation = () => {
           }}
           name="Auth"
           component={AuthNavigation}
-        /> */}
+        />
+
         <Stack.Screen
           options={{
             headerShown: false,
@@ -94,6 +95,13 @@ const RootNavigation = () => {
           name="OrderDetailScreen"
           component={OrderDetailScreen}
         />
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="License"
+          component={LicenseScreen}
+        />
 
         <Stack.Screen
           name="NoOrderScreen"
@@ -140,6 +148,14 @@ const RootNavigation = () => {
           }}
           name="Rating"
           component={RatingScreen}
+        />
+
+        <Stack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="HelpDesk"
+          component={HelpDesk}
         />
       </Stack.Navigator>
     </>

@@ -27,8 +27,9 @@ export const authApi = createApi({
     //
     OtpAuth: builder.mutation<UserResponse, UserRequest>({
       query: payload => ({
-        url: `/verify-code/${userId}?verif_code=${payload}`,
+        url: `/verify-code/${payload.userId}?verif_code=${payload?.verif_code}`,
         method: 'post',
+        body:payload
       }),
     }),
 

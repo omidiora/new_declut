@@ -73,9 +73,10 @@ const ProfileScreen = () => {
   const {getItem, setItem} = useAsyncStorage('@declut');
   const [imageItem, setImageItem] = React.useState({});
   const [user, setUser] = React.useState({});
-  const product = useSelector(state => state.product?.data?.data?.data);
+  const product = useSelector(state => state?.product?.profilePicture);
   const {removeItem} = useAsyncStorage('@declut_user');
   const [cameraPermission, setCameraPermission] = React.useState(false);
+  const [img, setImg] = React.useState('');
 
   const LogoutAction = async () => {
     try {
@@ -99,7 +100,7 @@ const ProfileScreen = () => {
     };
 
     readItemFromStorage();
-  }, []);
+  }, [product]);
 
   const requestCameraPermission = async () => {
     try {
@@ -131,6 +132,23 @@ const ProfileScreen = () => {
   }, []);
 
   let Profile = true;
+
+  React.useEffect(() => {
+    setImg(product?.[0]?.path);
+  }, [product]);
+
+  const updateAvatar = () => {
+    dispatch(
+      editProfileApi({
+        avatar: img,
+        name: user?.name,
+        email: user?.email,
+        phone_number: user?.phone_number,
+        id: user?.id,
+      }),
+    );
+  };
+
   const ImagePicker = async () => {
     console.log('image picker');
     try {
@@ -155,27 +173,21 @@ const ProfileScreen = () => {
           name: imageItem?.assets?.[0]?.fileName,
         });
 
-        console.log('got to ');
+        // alert('success');
+
+        // console.log('got to ');
+
         dispatch(upLoadFileApi(formData, navigation, Profile, updateAvatar));
       }
     } catch (err) {
+      alert('error from uploading');
       console.log(err, 'err from uploading');
     }
   };
 
-  const updateAvatar = () => {
-    dispatch(
-      editProfileApi({
-        name: user?.name,
-        email: user?.email,
-        phone_number: user?.phone_number,
-        id: user?.id,
-        avatar: product[0]?.path,
-      }),
-    );
-  };
-
-  console.log(uploadApiLoading, editProfielLoading, '1111');
+  console.log('====================================');
+  console.log(product?.[0]?.path, 'path');
+  console.log('====================================');
   return (
     <View style={styles.container}>
       {/* {cameraPermission && device ? (
@@ -255,12 +267,13 @@ const ProfileScreen = () => {
           title1={'Help & support'}
           title2={'Help Desk'}
           onPress2={() => navigation.navigate('PushNotification')}
+          onPress2={() => navigation.navigate('HelpDesk')}
         />
         <ProfileCard
           headerTitle={'Legal'}
           title1={'Licenses'}
           title2={'Terms of Service'}
-          onPress1={() => navigation.navigate('LicenseScreen')}
+          onPress1={() => navigation.navigate('License')}
           // LicenseScreen
         />
         <ProfileCard
@@ -284,13 +297,13 @@ const ProfileScreen = () => {
       <RBSheet
         ref={refRBSheet}
         // useNativeDriver={false}
-        height={200}
+        height={100}
         customStyles={{
           wrapper: {
             backgroundColor: 'transparent',
           },
           draggableIcon: {
-            backgroundColor: '#000',
+            backgroundColor: '#lightgrey',
           },
         }}
         customModalProps={{
@@ -306,9 +319,9 @@ const ProfileScreen = () => {
             <SemiBoldText color="black">Upload from gallery</SemiBoldText>
           </TouchableOpacity>
           <Spacer height={30} />
-          <TouchableOpacity>
+          {/* <TouchableOpacity>
             <SemiBoldText color="black">Take a picture</SemiBoldText>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </ViewContainer>
       </RBSheet>
     </View>
@@ -390,8 +403,8 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     fontWeight: 'bold',
   },
-  cameraContainer:{
-    height:450,
-    width:400
-  }
+  cameraContainer: {
+    height: 450,
+    width: 400,
+  },
 });

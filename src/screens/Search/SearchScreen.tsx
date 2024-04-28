@@ -60,6 +60,7 @@ import SearchGlass from '../../assets/images/glass.svg';
 import ArrowUp from '../../assets/images/arrow-up-right.svg';
 import {ScrollView} from 'react-native';
 import {LineComponent} from '../Home/component';
+import {OutlineButton} from '../../component/view/button';
 
 const LocationIcon = styled(Location)({
   marginTop: 1,
@@ -82,6 +83,7 @@ const SearchScreen = () => {
   const [search, setSearch] = React.useState<string>('');
   const [searchHistory, setSearchHistory] = useState([]);
   const {getItem, setItem} = useAsyncStorage('savedKeywordHistory');
+  const [showCrying, setshowCrying] = useState(false);
 
   const loadSearchHistory = async () => {
     try {
@@ -134,22 +136,22 @@ const SearchScreen = () => {
     if (search == '') {
       Alert.alert('Search', 'Enter a keyword!');
     } else {
-      dispatch(searchResultApi(search));
+      dispatch(searchResultApi(search, setshowCrying));
     }
   };
 
   const SearchFromKeyWord = item => {
-    dispatch(searchResultApi(item));
+    dispatch(searchResultApi(item, setshowCrying));
   };
 
   console.log(data, 'data?.data?.length');
 
   return (
-    <BaseView backgroundColor={colors.bgColor}>
+    <BaseView backgroundColor={colors.bgColor} focusBarStyle={'dark-content'}>
       <Spacer />
       <ViewContainer>
         <SearchInput
-          placeholder="What are you looking for"
+          placeholder="What are you looking for ?"
           value={search}
           // autoFocus={true}
           containerStyle={{
@@ -186,13 +188,13 @@ const SearchScreen = () => {
                 ? Object.values(data?.data ?? {})
                 : data?.data
             }
-            keyExtractor={(item)=>item.id}
+            keyExtractor={item => item.id}
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             renderItem={({item}) => (
               <>
                 <TouchableOpacity
-                  style={{marginBottom: 50, flexDirection: 'row'}}
+                  style={{marginBottom: 20, flexDirection: 'row'}}
                   onPress={() => navigation.navigate('PreviewItem', {item})}>
                   <FastImage
                     style={{
@@ -269,58 +271,92 @@ const SearchScreen = () => {
             ListEmptyComponent={() => (
               <>
                 <>
-                  <ViewContainer paddingHorizontal={7}>
-                    <Spacer height={50} />
-                    {!searchHistory?.length==0 && (
-                      <Row justifyContent="space-between" disabled={true}>
-                        <BoldText fontSize={fontSize.md} color="black">
-                          Recent Searches
-                        </BoldText>
-                        <TouchableOpacity onPress={() => clearHistory()}>
-                          <SemiBoldText
-                            color={colors.mainColor}
-                            fontSize={fontSize.sm}>
-                            CLEAR
-                          </SemiBoldText>
-                        </TouchableOpacity>
-                      </Row>
-                    )}
-                    <Spacer height={40} />
-                    {searchHistory.map((item, index) => (
-                      <ScrollView contentContainerStyle={{paddingBottom: 40}}>
-                        <Row
-                          key={index}
-                          justifyContent="space-between"
-                          disabled={true}>
-                          <Row disabled={true}>
-                            <SearchGlass />
-                            <HSpacer width={10} />
-                            <SemiBoldText
-                              fontSize={fontSize.sm + 2}
-                              color="#667085">
-                              {item}
-                            </SemiBoldText>
+                  {showCrying ? (
+                    <>
+                      <View style={{alignSelf: 'center',marginTop:68,zIndex:300}}>
+                        <Text
+                          style={{
+                            fontSize: 100,
+                            color: 'black',
+                            textAlign: 'center',
+                          }}>
+                          😥
+                        </Text>
+                        <Spacer />
+                        <SemiBoldText fontSize={16} color={colors.lightBlack}>
+                          Oops! Item Not Found!
+                        </SemiBoldText>
+                        <Spacer />
+                        <OutlineButton
+                          onPress={() => setshowCrying(false)}
+                          title="OK"
+                          style={{
+                            borderWidth: 0.4,
+                            borderRadius: 30,
+
+                            alignContent: 'center',
+                            height: 56,
+                          }}
+                        />
+                      </View>
+                    </>
+                  ) : (
+                    <>
+                      <ViewContainer paddingHorizontal={7}>
+                        <Spacer height={50} />
+                        {!searchHistory?.length == 0 && (
+                          <Row justifyContent="space-between" disabled={true}>
+                            <BoldText fontSize={fontSize.md} color="black">
+                              Recent Searches
+                            </BoldText>
+                            <TouchableOpacity onPress={() => clearHistory()}>
+                              <SemiBoldText
+                                color={colors.mainColor}
+                                fontSize={fontSize.sm}>
+                                CLEAR
+                              </SemiBoldText>
+                            </TouchableOpacity>
                           </Row>
-                          <Spacer height={10} />
+                        )}
+                        <Spacer height={40} />
+                        {searchHistory.map((item, index) => (
+                          <ScrollView
+                            contentContainerStyle={{paddingBottom: 40}}>
+                            <Row
+                              key={index}
+                              justifyContent="space-between"
+                              disabled={true}>
+                              <Row disabled={true}>
+                                <SearchGlass />
+                                <HSpacer width={10} />
+                                <SemiBoldText
+                                  fontSize={fontSize.sm + 2}
+                                  color="#667085">
+                                  {item}
+                                </SemiBoldText>
+                              </Row>
+                              <Spacer height={10} />
 
-                          <TouchableOpacity
-                            onPress={() => SearchFromKeyWord(item)}>
-                            <ArrowUp />
-                          </TouchableOpacity>
-                        </Row>
-                        <Spacer height={10} />
-                        <LineComponent />
-                      </ScrollView>
-                    ))}
+                              <TouchableOpacity
+                                onPress={() => SearchFromKeyWord(item)}>
+                                <ArrowUp />
+                              </TouchableOpacity>
+                            </Row>
+                            <Spacer height={10} />
+                            <LineComponent />
+                          </ScrollView>
+                        ))}
 
-                    {/* <Spacer height={20} />
+                        {/* <Spacer height={20} />
                 <SemiBoldText
                   textAlign="center"
                   fontSize={fontSize.sm + 2}
                   color="black">
                   No Item Found!!!!
                 </SemiBoldText> */}
-                  </ViewContainer>
+                      </ViewContainer>
+                    </>
+                  )}
                 </>
               </>
             )}

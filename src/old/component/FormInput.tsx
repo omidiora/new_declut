@@ -81,7 +81,10 @@ const FormInput = ({
           
           style={[
             styles.textInput,
-            {borderColor:borderColor?COLOR.mainColor:"#E4E7EC", },
+            {borderColor:borderColor?COLOR.mainColor:"#E4E7EC",
+      
+          },
+          disabled &&{color:"#98A2B3"},
             backgroundColor&&{backgroundColor:backgroundColor}, 
             inputBold && {fontWeight:"bold"} ,
               multiline && {
@@ -89,6 +92,9 @@ const FormInput = ({
               paddingTop: HP(2),
               textAlignVertical: 'top',
             },
+            disabled &&{
+              backgroundColor:"#F2F4F7"
+            }
           ]}
           onChangeText={onChangeText}
           onFocus={onFocus}
@@ -126,7 +132,7 @@ const styles = StyleSheet.create({
     color: 'black',
     
     // fontWeight: '400',
-    marginLeft:1,
+    marginLeft:10,
     fontFamily: font.medium,
     fontWeight: '400',
  

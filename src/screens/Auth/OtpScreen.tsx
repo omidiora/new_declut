@@ -55,16 +55,22 @@ const OtpScreen = props => {
     return () => clearTimeout(timer);
   }, []);
 
+  
   const VerifyOtp = () => {
-    OtpAuth(otpText)
+    let payload={
+      userId:props.route.params?.user?.id,
+      verif_code:otpText,
+    }
+    OtpAuth(payload)
       .unwrap()
       .then(response => {
         console.log(response, 'response from verify otp');
         if (response.code == 200 || response.code == 201) {
-          AlertNofity('Success', 'Account Verified Successfully');
-          navigation.navigate('Auth', {
-            screen: 'Login',
+          navigate('Auth', {
+            screen: 'login',
           });
+          AlertNofity('Success', 'Account Verified Successfully');
+          
         } else {
           AlertNofityError(response.message);
         }
@@ -80,7 +86,7 @@ const OtpScreen = props => {
 
   const ResendOtpCode = () => {
     setRemainingTime(60);
-    ResendOtpAuth(userId)
+    ResendOtpAuth(props.route.params?.user?.id)
       .unwrap()
       .then(response => {
         console.log(response, 'resonse');
@@ -93,8 +99,10 @@ const OtpScreen = props => {
       });
   };
 
+  console.log(otpText, 'aldnkladslmfaldslfmadlmflasdmlfmlasdmflar');
+  
   return (
-    <BaseView backgroundColor={colors.bgColor}>
+    <BaseView backgroundColor={colors.bgColor} focusBarStyle={'dark-content'}>
       <TopHeader
         title={'OTP Verification'}
         // borderBottom
@@ -118,7 +126,7 @@ const OtpScreen = props => {
           lineHeight={fontSize.xxl - 4}
           color={colors.darkBlack}
           textAlign="center">
-          +2349012345678
+          {props.route.params?.phone}
         </BoldText>
         <Spacer height={30} />
         <OTPTextView
@@ -150,10 +158,11 @@ const OtpScreen = props => {
             />
           </>
         )}
-        <Spacer height={150} />
+        <Spacer  />
         <PrimaryButton
           onPress={() => VerifyOtp()}
           text="Verify"
+          isLoading={isLoading}
           backgroundColor={
             otpText?.length == 6 ? colors.mainColor : colors.lightGrey
           }

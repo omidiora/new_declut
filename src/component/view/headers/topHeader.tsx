@@ -67,7 +67,7 @@ export const TopHeader: React.FC<{
         {rightComponent ? (
           <>
             <TouchableOpacity onPress={onPress}>
-            <SemiBoldText fontSize={RFFontSize.sm + 2} color={colors.mainColor}>
+            <SemiBoldText fontSize={14} color={colors.mainColor}>
              {rightText}
             </SemiBoldText>
             </TouchableOpacity>

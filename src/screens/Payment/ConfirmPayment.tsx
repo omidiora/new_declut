@@ -56,7 +56,7 @@ const ConfirmPayment = props => {
   // console.log(paymentSuccess, 'paymentSucces');
   return (
     <View style={styles.container}>
-      <Text style={{color: 'red'}}>kandnkadnkn</Text>
+      {/* <Text style={{color: 'red'}}>kandnkadnkn</Text> */}
       <Modal isVisible={true}>
         <View style={{alignSelf: 'center'}}>
           <ActivityIndicator color={colors.mainColor} size={'large'} />

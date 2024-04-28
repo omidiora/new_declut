@@ -24,7 +24,8 @@ import Game from '../../../assets/images/svg/Game.svg';
 import {LineComponent} from '.';
 import QuickCard from '../../../component/view/QuickCard';
 import {HP, COLOR, WP} from '../../../old/Util/Util';
-import {Spacer} from '../../../component/view';
+import {Spacer, ViewContainer} from '../../../component/view';
+import { wp } from '../../../utils/general';
 
 // furniture.svg
 const ModalSeeAllComponent = ({onPress, visible, setModalVisible}) => {
@@ -47,6 +48,8 @@ const ModalSeeAllComponent = ({onPress, visible, setModalVisible}) => {
               flexDirection: 'row',
               justifyContent: 'space-between',
               paddingTop: 10,
+              // width:wp(100)
+
             }}>
             <Text style={styles.categories}>Categories</Text>
             <TouchableOpacity
@@ -57,7 +60,8 @@ const ModalSeeAllComponent = ({onPress, visible, setModalVisible}) => {
           </View>
           <Spacer height={10} />
           <LineComponent />
-          <View style={styles.quickCardContainer}>
+        <ViewContainer paddingHorizontal={30}>
+        <View style={styles.quickCardContainer}>
             <QuickCard
               image={<Electronics />}
               subTitle="Electronics"
@@ -160,7 +164,7 @@ const ModalSeeAllComponent = ({onPress, visible, setModalVisible}) => {
             />
             <QuickCard
               image={<Miss />}
-              subTitle="Miscellaneous"
+              subTitle="Others"
               onPress={() => NavigateCategoryProduct(17, 'Garden')}
             />
             <QuickCard
@@ -169,6 +173,7 @@ const ModalSeeAllComponent = ({onPress, visible, setModalVisible}) => {
               onPress={() => NavigateCategoryProduct(4, 'Toys & Games')}
             />
           </View>
+        </ViewContainer>
         </View>
       </Modal>
     </View>
@@ -179,20 +184,24 @@ export default ModalSeeAllComponent;
 
 const styles = StyleSheet.create({
   container: {
-    height: HP(94),
+    height: HP(95),
     width: WP(105),
     backgroundColor: 'white',
-    marginLeft: -25,
+    marginLeft: -28,
     borderRadius: 10,
+    
     // alignSelf:"center"
   },
   quickCardContainer: {
     marginTop: HP(1.7),
     marginBottom: HP(3),
-    marginHorizontal: WP(3),
+    // marginHorizontal: WP(3),
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
+    // justifyContent: 'space-between',
+    // flexWrap: 'wrap',
+    // paddingHorizontal:4,
+    // marginLeft:5
+   
   },
   categories: {
     fontWeight: 'bold',

@@ -4,6 +4,7 @@ import {upLoadFileApiPayload} from '../interface';
 import axios from 'axios';
 import axiosInstance from '../../src/utils/network/axiosInterceptors';
 import {SERVER_URL} from '../../src/utils/network/url';
+import {AlertNofity, AlertNofityError} from '../../src/utils/notify';
 
 const searchApi = createSlice({
   name: 'searchApi',
@@ -34,13 +35,19 @@ const searchApi = createSlice({
 export const {getSearchLoading, getSearchSuccess, getSearchFailure} =
   searchApi.actions;
 
-export const searchResultApi = (payload) => async dispatch => {
+export const searchResultApi =( payload ,setshowCrying)=> async dispatch => {
+  console.log(setshowCrying,'setshowCrying');
+  
   try {
     dispatch(getSearchLoading());
     await axiosInstance
       .get(`${SERVER_URL}/item/search?search=${payload}&viewer=buyer`)
       .then(response => {
-        console.log(response?.data?.data,'responsekkkkkk!!!!')
+        if (response?.data?.data.length == 0) {
+          AlertNofityError('Prodcut', 'Product Not Found!!!');
+          setshowCrying(true)
+        }
+        console.log(response?.data?.data, 'responsekkkkkk!!!!');
         dispatch(getSearchSuccess(response.data));
         return response.data;
       })

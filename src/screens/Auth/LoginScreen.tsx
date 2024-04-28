@@ -40,7 +40,8 @@ import {useDispatch} from 'react-redux';
 import {AlertNofityError} from '../../utils/notify';
 import {setCredential} from '../../../redux/auth';
 import {SearchBar} from '@rneui/themed';
-import {errorStyle} from './styling';
+import {errorStyle, labelStyle} from './styling';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 const DeclutContainer = styled.View({
   alignItems: 'center',
 });
@@ -65,6 +66,7 @@ const LoginScreen = () => {
   const dispatch = useDispatch();
   const {setItem} = useAsyncStorage('@declut_user');
   const {setItem: setUserDetails} = useAsyncStorage('@declut');
+  const {setItem: setUserHasAccount} = useAsyncStorage('@has_user_account');
   const {
     values,
     errors,
@@ -101,6 +103,7 @@ const LoginScreen = () => {
         if (response.code == 200) {
           setItem(response?.data?.authorisation?.token);
           setUserDetails(JSON.stringify(response?.data?.user));
+          setUserHasAccount(JSON.stringify(response?.data?.has_account));
           dispatch(
             setCredential({
               user: response?.data?.user,
@@ -125,7 +128,7 @@ const LoginScreen = () => {
   console.log('====================================');
 
   return (
-    <BaseView backgroundColor={colors.bgColor}>
+    <BaseView backgroundColor={colors.bgColor} focusBarStyle={'dark-content'}>
       <>
         <TopHeader
           title={'Sign In'}
@@ -136,129 +139,131 @@ const LoginScreen = () => {
         />
 
         <Spacer height={80} />
-        <ViewContainer paddingHorizontal={21}>
-          <DeclutContainer>
-            <Row
-              alignItems="center"
-              flexDirection={isFocused || isFocused2 ? 'row' : 'column'}
-              style={{right: isFocused || isFocused2 ? 80 : 0}}>
-              {/* */}
-              {isFocused || isFocused2 ? <SmallDeclut /> : <Declut />}
+        <KeyboardAwareScrollView>
+          <ViewContainer paddingHorizontal={21}>
+            <DeclutContainer>
+              <Row
+                alignItems="center"
+                flexDirection={isFocused || isFocused2 ? 'row' : 'column'}
+                style={{right: isFocused || isFocused2 ? 80 : 0}}>
+                {/* */}
+                {isFocused || isFocused2 ? <SmallDeclut /> : <Declut />}
 
-              <Spacer height={40} />
-              <HSpacer width={10} />
-              <View>
-                <SemiBoldText
-                  textAlign="center"
-                  fontSize={fontSize.sm + 4}
-                  color="#101828">
-                  Welcome Back!
-                </SemiBoldText>
-                <View style={{right: isFocused || isFocused2 ? 10 : 0}}>
-                  <RegularText
-                    fontSize={fontSize.sm + 2}
-                    color="black"
-                    textAlign="center">
-                    Lets get you in
-                  </RegularText>
+                <Spacer height={40} />
+                <HSpacer width={10} />
+                <View>
+                  <SemiBoldText
+                    textAlign="center"
+                    fontSize={fontSize.sm + 4}
+                    color="#101828">
+                    Welcome Back!
+                  </SemiBoldText>
+                  <View style={{right: isFocused || isFocused2 ? 10 : 0}}>
+                    <RegularText
+                      fontSize={fontSize.sm + 2}
+                      color="black"
+                      textAlign="center">
+                      Let's get you in
+                    </RegularText>
+                  </View>
                 </View>
-              </View>
-            </Row>
-          </DeclutContainer>
+              </Row>
+            </DeclutContainer>
 
-          <Spacer height={50} />
+            <Spacer height={50} />
 
-          <Input
-            keyboardType="numeric"
-            label="Phone *"
-            inputContainerStyle={[
-              styles.inputContainerStyle,
-              isFocused && {
-                borderColor: colors.mainColor,
-                borderWidth: 1,
-                borderBottomWidth: 1,
-              },
-              values.phone && {
-                backgroundColor: 'white',
-                // borderColor: colors.lightGrey,
-                // borderWidth: 1,
-              },
-              errors.phone && errorStyle,
-            ]}
-            inputStyle={{
-              lineHeight: RFFontSize.sm + 0.5,
-              fontFamily: font.semiBold,
-              fontSize: RFFontSize.sm,
-            }}
-            // leftIcon={<Sms />}
-            placeholder="Phone"
-            labelStyle={[
-              styles.labelStyle,
-              {
-                paddingTop: 3,
-              },
-              isFocused && {color: colors.mainColor},
-              values.phone && {
-                color: 'black',
-              },
-            ]}
-            onChangeText={handleChange('phone')}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            errorMessage={touched.phone && errors.phone}
-            //   errorMessage='adlmladnn'
-          />
-
-          {errors.phone && <Spacer />}
-          <View style={{marginLeft: SIZES.width / 50}}>
-            <PasswordInputComponent
-              label="Password *"
-              style={{
-                fontSize: fontSize.sm,
-                fontFamily: font.semiBold,
-                lineHeight: RFFontSize.sm + 0.5,
-                opacity: 0.8,
-              }}
-              containerStyle={[
+            <Input
+              keyboardType="numeric"
+              label="Phone *"
+              style={{fontSize: 12}}
+              inputContainerStyle={[
                 styles.inputContainerStyle,
-                {
-                  borderBottomWidth: 0.5,
-                },
-
-                errors.phone && errorStyle,
-                isFocused2 && {
+                isFocused && {
                   borderColor: colors.mainColor,
                   borderWidth: 1,
                   borderBottomWidth: 1,
-                  // left:113,
                 },
-                values.password && {
+                values.phone && {
                   backgroundColor: 'white',
                   // borderColor: colors.lightGrey,
                   // borderWidth: 1,
                 },
+                errors.phone && errorStyle,
               ]}
+              inputStyle={{
+                lineHeight: RFFontSize.sm + 0.5,
+                fontFamily: font.semiBold,
+                fontSize: RFFontSize.sm,
+              }}
               // leftIcon={<Sms />}
-              placeholder="password"
+              placeholder="Phone"
               labelStyle={[
-                styles.labelStyle,
-                isFocused2 && {color: colors.mainColor},
+                labelStyle,
+                {
+                  paddingTop: 3,
+                },
+                isFocused && {color: colors.mainColor},
+                values.phone && {
+                  color: 'black',
+                },
               ]}
-              onChangeText={handleChange('password')}
-              setIsFocused={() => setIsFocused2(true)}
-              setIsBlur={() => setIsFocused2(false)}
-              bottomText={touched.password && errors.password}
-              bottomTextOnError={false}
-              inputError={true}
-
-              //   bottomText='adlmladnn'
+              onChangeText={handleChange('phone')}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              errorMessage={errors.phone}
+              //   errorMessage='adlmladnn'
             />
-            <ForgotContainer onPress={() => navigate('forgotPassword')}>
-              <ForgotText>Forgot Password?</ForgotText>
-            </ForgotContainer>
-          </View>
 
-          {/* <Input
+            {errors.phone && <Spacer />}
+            <View style={{marginLeft: SIZES.width / 50}}>
+              <PasswordInputComponent
+                label="Password *"
+                style={{
+                  fontSize: fontSize.sm,
+                  fontFamily: font.semiBold,
+                  lineHeight: RFFontSize.sm + 0.5,
+                  opacity: 0.8,
+                }}
+                containerStyle={[
+                  styles.inputContainerStyle,
+                  {
+                    // borderBottomWidth: 0.5,
+                  },
+
+                  errors.phone && errorStyle,
+                  isFocused2 && {
+                    borderColor: colors.mainColor,
+                    borderWidth: 1,
+                    borderBottomWidth: 1,
+                    // left:113,
+                  },
+                  values.password && {
+                    backgroundColor: 'white',
+                    // borderColor: colors.lightGrey,
+                    // borderWidth: 1,
+                  },
+                ]}
+                // leftIcon={<Sms />}
+                placeholder="Password"
+                labelStyle={[
+                  labelStyle,
+                  isFocused2 && {color: colors.mainColor},
+                ]}
+                onChangeText={handleChange('password')}
+                setIsFocused={() => setIsFocused2(true)}
+                setIsBlur={() => setIsFocused2(false)}
+                bottomText={errors.password}
+                bottomTextOnError={false}
+                inputError={true}
+
+                //   bottomText='adlmladnn'
+              />
+              <ForgotContainer onPress={() => navigate('forgotPassword')}>
+                <ForgotText>Forgot Password?</ForgotText>
+              </ForgotContainer>
+            </View>
+
+            {/* <Input
             label="Password  *"
             inputContainerStyle={[
               styles.inputContainerStyle,
@@ -285,27 +290,28 @@ const LoginScreen = () => {
             errorMessage={errors.phone}
             //   errorMessage='adlmladnn'
           /> */}
-          <Spacer height={130} />
+            {errors.phone ? <Spacer height={20} /> : <Spacer height={10} />}
 
-          <PrimaryButton
-            isLoading={isLoading}
-            text="Sign In"
-            color={
-              (values.password || values.phone) == ''
-                ? colors.disabled
-                : colors.white
-            }
-            onPress={handleSubmit}
-            backgroundColor={
-              (values.password || values.phone) == ''
-                ? colors.grey
-                : colors.mainColor
-            }
-            disabled={
-              (!values.password || !values.phone || isLoading == true) && true
-            }
-          />
-        </ViewContainer>
+            <PrimaryButton
+              isLoading={isLoading}
+              text="Sign In"
+              color={
+                (values.password || values.phone) == ''
+                  ? colors.disabled
+                  : colors.white
+              }
+              onPress={handleSubmit}
+              backgroundColor={
+                (values.password || values.phone) == ''
+                  ? colors.grey
+                  : colors.mainColor
+              }
+              disabled={
+                (!values.password || !values.phone || isLoading == true) && true
+              }
+            />
+          </ViewContainer>
+        </KeyboardAwareScrollView>
       </>
     </BaseView>
   );

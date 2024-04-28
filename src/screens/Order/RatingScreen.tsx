@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -30,7 +31,11 @@ import Location from '../../assets/images/location.svg';
 import DummyPhoto from '../../assets/images/photo.svg';
 import styled from '@emotion/native';
 import StarRating from '../../assets/images/star.svg';
-import {OutlineButton, PrimaryButton} from '../../component/view/button';
+import {
+  OutlineButton,
+  PrimaryButton,
+  SecondaryButton,
+} from '../../component/view/button';
 import moment from 'moment';
 import {useAsyncStorage} from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
@@ -47,11 +52,9 @@ import {SIZES} from '../../utils/theme/theme';
 import UserAvatar from 'react-native-user-avatar';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Rating, AirbnbRating} from 'react-native-ratings';
-import emoji from '../../assets/images/emoji1.svg';
-import emoji2 from '../../assets/images/emoji2.svg';
-import emoji3 from '../../assets/images/emoji3.svg';
-import emoji4 from '../../assets/images/emoji4.svg';
-import emoji5 from '../../assets/images/emoji5.svg';
+import Emoji from '../../assets/images/emoji21.svg';
+import {Image} from 'react-native';
+import {experienceApi, ratingApi} from '../../../redux/product/api';
 
 const LocationIcon = styled(Location)({
   top: 5,
@@ -98,23 +101,23 @@ const SuccessIconView = styled(SuccessIcon)({
 const RatingExperience = [
   {
     id: 1,
-    image: emoji,
+    image: require('../../assets/images/eemoji.png'),
   },
   {
     id: 2,
-image: <emoji2 />,
+    image: require('../../assets/images/eemoji2.png'),
   },
   {
     id: 3,
-    image: <emoji3 />,
+    image: require('../../assets/images/eemoji3.png'),
   },
   {
     id: 4,
-    image: <emoji4 />,
+    image: require('../../assets/images/eemoji4.png'),
   },
   {
     id: 5,
-    image: <emoji5 />,
+    image: require('../../assets/images/eemoji5.png'),
   },
 ];
 const RatingScreen = ({route}) => {
@@ -128,6 +131,7 @@ const RatingScreen = ({route}) => {
   const [loading, setLoading] = React.useState(false);
   const [loading2, setLoading2] = React.useState(false);
   const [user, setUser] = React.useState({});
+  const ratingLoading = useSelector(state => state.product.ratingLoading);
 
   const dispatch = useDispatch();
   const getUserDetail = async () => {
@@ -139,12 +143,29 @@ const RatingScreen = ({route}) => {
     getUserDetail();
   }, []);
 
-  console.log(route.params?.params?.order?.rating, 'adknakdn');
+  const RateUser = value => {
+    let payload = {
+      rate: value,
+      seller_id: route.params?.params?.order?.seller_id,
+      order_id: route.params?.params?.order?.id,
+    };
+    dispatch(ratingApi(payload));
+  };
+
+  const userExperience = (id, description) => {
+    console.log(id, description);
+    let payload = {
+      rate: value,
+      seller_id: route.params?.params?.order?.seller_id,
+      order_id: route.params?.params?.order?.id,
+    };
+    dispatch(experienceApi(payload));
+  };
 
   return (
     <BaseView backgroundColor={colors.bgColor}>
-      <TopHeader borderBottom title={route?.params?.params?.order?.order_no} />
-      <ScrollView>
+      <TopHeader title={route?.params?.params?.order?.order_no} />
+      <ScrollView contentContainerStyle={{paddingBottom: 30}}>
         <ViewContainer paddingVertical={20} paddingHorizontal={27}>
           <Row justifyContent="space-between" disabled={true}>
             <SemiBoldText fontSize={fontSize.md} color={colors.darkBlack}>
@@ -217,23 +238,51 @@ const RatingScreen = ({route}) => {
             </SemiBoldText>
           </Row>
 
-          <AirbnbRating
-            count={5}
-            reviews={['Terrible', 'Bad', 'Average', 'Good', 'Excellent']}
-            defaultRating={0}
-            size={20}
-            onFinishRating={value => {
-              console.log(value, 'adlnankdk');
-            }}
-          />
+          {ratingLoading ? (
+            <ActivityIndicator color={'green'} size={'small'} />
+          ) : (
+            <AirbnbRating
+              count={5}
+              reviews={['Terrible', 'Bad', 'Average', 'Good', 'Excellent']}
+              defaultRating={0}
+              size={20}
+              onFinishRating={value => {
+                RateUser(value);
+              }}
+            />
+          )}
+          <Spacer height={30} />
           <LineComponent />
 
-          <Spacer />
+          <Spacer height={30} />
 
-          <SemiBoldText>How’s your experience so far? </SemiBoldText>
-          {RatingExperience.map(item => (
-            <View key={item.id}>{item.name}</View>
-          ))}
+          <SemiBoldText fontSize={fontSize.md} color="black" textAlign="center">
+            How’s your experience so far?
+          </SemiBoldText>
+
+          <Spacer />
+          <Row justifyContent="center">
+            <TouchableOpacity onPress={() => userExperience(1, 'Terrible')}>
+              <Text style={{fontSize: 30, color: 'black'}}>😖 </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => userExperience(2, 'Bad')}>
+              <Text style={{fontSize: 30, color: 'black'}}> 😒</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => userExperience(3, 'Average')}>
+              <Text style={{fontSize: 30, color: 'black'}}> 😐 </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => userExperience(4, 'Good Service')}>
+              <Text style={{fontSize: 30, color: 'black'}}> 🙂 </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => userExperience(4, 'Excellent Service')}>
+              <Text style={{fontSize: 30, color: 'black'}}> 😍</Text>
+            </TouchableOpacity>
+          </Row>
+          <Spacer height={70} />
+
+          <SecondaryButton backgroundColor={'#02A89E'}
+           text="Support" />
         </ViewContainer>
       </ScrollView>
     </BaseView>

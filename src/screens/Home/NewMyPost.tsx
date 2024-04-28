@@ -5,7 +5,7 @@ import FastImage from 'react-native-fast-image';
 import {SIZES} from '../../utils/theme/theme';
 import {HSpacer, Spacer, ViewContainer} from '../../component/view';
 import {BoldText, RegularText, SemiBoldText} from '../../utils/text';
-import {NAIRA_SYSMBOL, ShowFourteenWords} from '../../utils/general';
+import {NAIRA_SYSMBOL, ShowFourteenWords, hp, shortenText, wp} from '../../utils/general';
 import {
   useFocusEffect,
   useNavigation,
@@ -31,6 +31,10 @@ import TrashIcon from '../../assets/images/trash.svg';
 import EditIcon from '../../assets/images/edit.svg';
 import Shimmer from 'react-native-shimmer-kit';
 import {FloatingAction} from 'react-native-floating-action';
+import {PostLoader} from 'react-native-preloader-shimmer';
+import EmptyImage from '../../assets/images/empty.svg';
+
+
 const LocationIcon = styled(Location)({
   marginTop: 1,
   // paddingHorizontal:10,
@@ -40,6 +44,7 @@ const LocationIcon = styled(Location)({
 const ActionContainer = styled.TouchableOpacity({
   flexDirection: 'row',
   padding: 10,
+
 });
 
 const NewMyPost = () => {
@@ -49,6 +54,7 @@ const NewMyPost = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [productId, setproductId] = React.useState(null);
+  const [product, setProduct] = React.useState(null);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -66,18 +72,16 @@ const NewMyPost = () => {
 
   const EditItem = item => {
     refRBSheet.current.close();
-    dispatch(editProductItemAction(item));
+    dispatch(editProductItemAction(product));
+    // dispatch(editProductItemAction(item));
     navigation.navigate('ProductNavigation', {
       screen: 'EditItem1',
       params: {
-        productDetails: item,
+        productDetails: product,
       },
     });
   };
 
-  console.log('====================================');
-  console.log(myPost?.data ,'myPost?.data ');
-  console.log('====================================');
   return (
     <BaseView backgroundColor={colors.bgColor}>
       <Spacer />
@@ -93,6 +97,7 @@ const NewMyPost = () => {
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             renderItem={({item}) => (
+              console.log(item?.item_media[0]?.filepath,'item.item_image?'),
               <>
                 <View style={{marginBottom: 50, flexDirection: 'row'}}>
                   <FastImage
@@ -103,7 +108,7 @@ const NewMyPost = () => {
                       borderRadius: 12,
                     }}
                     source={{
-                      uri: item.item_image,
+                      uri: item?.item_media[0]?.filepath,
                       priority: FastImage.priority.high,
                     }}
                     resizeMode={FastImage.resizeMode.cover}
@@ -117,7 +122,7 @@ const NewMyPost = () => {
                         fontSize={14}
                         lineHeight={21}>
                         <Text numberOfLines={0.1} style={{flexShrink: 1}}>
-                          {ShowFourteenWords(item.item_name)}
+                          {shortenText(item.item_name)}
                         </Text>
                       </BoldText>
                       <Spacer height={5} />
@@ -156,6 +161,7 @@ const NewMyPost = () => {
                   <TouchableOpacity
                     onPress={() => {
                       setproductId(item);
+                      setProduct(item);
                       refRBSheet.current.open();
                     }}>
                     <MaterialCommunityIcons
@@ -167,17 +173,49 @@ const NewMyPost = () => {
                 </View>
               </>
             )}
-            ListEmptyComponent={() => <></>}
+            ListEmptyComponent={() => (
+              <>
+                <>
+                  {loading ? (
+                    <View style={styles.empty}>
+                      <PostLoader
+                        barStyle={'dark-content'} //---> StatusBar Icon color
+                        animSpeed={100} //----> Animation Speed default 100
+                        visible={true} //----> Visibility
+                        backgroundColor={'white'}
+                      />
+                    </View>
+                  ) : (
+                    <>
+                     <View style={{alignSelf:'center'}}>
+                     <EmptyImage height={350} />
+                     </View>
+                      <Spacer height={10} />
+                      <SemiBoldText
+                        textAlign="center"
+                        fontSize={14}
+                        color={colors.secondaryBlack}
+                        >
+                       You don't have any items listed. Use the plus '+'
+                       button bellow to add an item
+                      </SemiBoldText>
+                    </>
+                  )}
+                </>
+              </>
+            )}
           />
         </View>
       </ViewContainer>
 
       <RBSheet
+      height={150}
         ref={refRBSheet}
         useNativeDriver={false}
         customStyles={{
           wrapper: {
             backgroundColor: 'transparent',
+            
           },
           draggableIcon: {
             backgroundColor: '#000',
@@ -221,11 +259,16 @@ const NewMyPost = () => {
         </ActionContainer>
       </RBSheet>
       <Spacer height={350} />
-      
     </BaseView>
   );
 };
 
 export default NewMyPost;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  empty: {
+    alignSelf: 'center',
+    marginTop: hp(2),
+    width: wp(100),
+  },
+});

@@ -14,7 +14,14 @@ const AuthNavigation = () => {
 
   return (
     <Stack.Navigator>
-      {/*       <Stack.Screen
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="login"
+        component={LoginScreen}
+      />
+      <Stack.Screen
         options={{
           headerShown: false,
         }}
@@ -36,14 +43,6 @@ const AuthNavigation = () => {
         name="createPassword"
         component={CreatePassword}
       />
-     */}
-     <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
-        name="login"
-        component={LoginScreen}
-      />
 
       <Stack.Screen
         options={{
@@ -52,13 +51,13 @@ const AuthNavigation = () => {
         name="forgotPassword"
         component={ForgotPasswordScreen}
       />
-       <Stack.Screen
+      <Stack.Screen
         options={{
           headerShown: false,
         }}
         name="otp"
         component={OtpScreen}
-      /> 
+      />
     </Stack.Navigator>
   );
 };
